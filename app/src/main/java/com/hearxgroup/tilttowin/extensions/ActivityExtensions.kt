@@ -1,4 +1,4 @@
-package com.hearxgroup.tilttowin.features.extensions
+package com.hearxgroup.tilttowin.extensions
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.hearxgroup.tilttowin.R
 import com.hearxgroup.tilttowin.constants.ACTIVITY_TRANSITION
 import com.hearxgroup.tilttowin.constants.PAYLOAD_KEY
-import com.hearxgroup.tilttowin.features.models.Transition
+import com.hearxgroup.tilttowin.models.Transition
 
 val FADE_IN_ACTIVITY = getTransitionAnimation(R.anim.fade_in, R.anim.no_transition)
 val FADE_OUT_ACTIVITY = getTransitionAnimation(R.anim.no_transition, R.anim.fade_out)
