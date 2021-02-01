@@ -1,6 +1,6 @@
-package co.za.platinumaccess.platinumaccess.features.selector.enum
+package com.hearxgroup.tilttowin.enum
 
-import co.za.platinumaccess.platinumaccess.R
+import com.hearxgroup.tilttowin.R
 
 enum class TiltDirection(val directionName: String, val directionIcon: Int) {
     Left("Left", R.drawable.ic_left),
