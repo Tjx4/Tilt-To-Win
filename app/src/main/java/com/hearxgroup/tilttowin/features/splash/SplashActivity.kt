@@ -1,4 +1,4 @@
-gpackage com.hearxgroup.tilttowin.features.splash
+package com.hearxgroup.tilttowin.features.splash
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
