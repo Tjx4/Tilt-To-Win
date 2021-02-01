@@ -15,6 +15,7 @@ import com.hearxgroup.tilttowin.R
 import com.hearxgroup.tilttowin.base.activities.BaseActivity
 import com.hearxgroup.tilttowin.databinding.ActivityGameBinding
 import com.hearxgroup.tilttowin.features.game.fragments.ColorSelectorFragment
+import com.hearxgroup.tilttowin.features.game.fragments.RoundFinishedFragment
 import com.hearxgroup.tilttowin.helpers.showDialogFragment
 import com.hearxgroup.tilttowin.helpers.showErrorAlert
 import com.hearxgroup.tilttowin.helpers.showSuccessAlert
@@ -46,6 +47,10 @@ class GameActivity : BaseActivity(), SensorEventListener {
     private fun addObservers() {
         gameViewModel.isCountDownFinished.observe(this, Observer {onCountDownFinished(it)})
         gameViewModel.colorIndex.observe(this, Observer {onColorSet(it)})
+        gameViewModel.arrow.observe(this, Observer {onRequiredDirectionSet(it)})
+        gameViewModel.userTiltDirection.observe(this, Observer {onUserTiltDirectionSet(it)})
+        gameViewModel.isWinRound.observe(this, Observer {onWinRound(it)})
+        gameViewModel.isLoseRound.observe(this, Observer {onLoseRound(it)})
         gameViewModel.isWinGame.observe(this, Observer {onWinGame(it)})
         gameViewModel.isLoseGame.observe(this, Observer {onLoseGame(it)})
     }
@@ -66,28 +71,37 @@ class GameActivity : BaseActivity(), SensorEventListener {
         )
     }
 
-    private fun onColorSet(cIndx: Int){
+    private fun onColorSet(cIndex: Int){
         clTopBanner.visibility = View.VISIBLE
         Toast.makeText(this, getString(R.string.game_begun), Toast.LENGTH_SHORT).show()
     }
 
-    private fun onWinGame(isWin: Boolean){
-        imgDirection.visibility = View.GONE
-        showSuccessAlert(this, getString(R.string.win_title), getString(R.string.game_win_message), getString(R.string.close_app)) {
-            finish()
-        }
+    private fun onRequiredDirectionSet(dIndex: Int){
+        imgDirection.visibility = View.VISIBLE
     }
 
-    private fun onLoseGame(isLose: Boolean) {
+    private fun onUserTiltDirectionSet(directionIndex: Int) {
+        gameViewModel.checkTiltDirectionMatch(directionIndex)
+    }
+
+    private fun onWinRound(isWin: Boolean){
         imgDirection.visibility = View.GONE
-        showErrorAlert(
-            this,
-            getString(R.string.lose_title),
-             getString(R.string.game_lose_message),
-            getString(R.string.close_app)
-        ) {
-            finish()
-        }
+        showRoundDoneFragment()
+    }
+
+    private fun onLoseRound(isLose: Boolean) {
+        imgDirection.visibility = View.GONE
+        showRoundDoneFragment()
+    }
+
+    private fun showRoundDoneFragment() {
+        val roundFinishedFragment = RoundFinishedFragment.newInstance()
+        showDialogFragment(
+            getString(R.string.round_complete),
+            null,
+            roundFinishedFragment,
+            this
+        )
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -141,5 +155,25 @@ class GameActivity : BaseActivity(), SensorEventListener {
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
 
     }
+
+    private fun onWinGame(isWin: Boolean){
+        imgDirection.visibility = View.GONE
+        showSuccessAlert(this, getString(R.string.win_title), getString(R.string.game_win_message), getString(R.string.close_app)) {
+            finish()
+        }
+    }
+
+    private fun onLoseGame(isLose: Boolean) {
+        imgDirection.visibility = View.GONE
+        showErrorAlert(
+            this,
+            getString(R.string.lose_title),
+            getString(R.string.game_lose_message),
+            getString(R.string.close_app)
+        ) {
+            finish()
+        }
+    }
+
 
 }

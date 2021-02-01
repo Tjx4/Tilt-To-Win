@@ -32,6 +32,18 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val isCountDownFinished: LiveData<Boolean>
         get() = _isCountDownFinished
 
+    private val _userTiltDirection: MutableLiveData<Int> = MutableLiveData()
+    val userTiltDirection: LiveData<Int>
+        get() = _userTiltDirection
+
+    private val _isWinRound: MutableLiveData<Boolean> = MutableLiveData()
+    val isWinRound: MutableLiveData<Boolean>
+        get() = _isWinRound
+
+    private val _isLoseRound: MutableLiveData<Boolean> = MutableLiveData()
+    val isLoseRound: MutableLiveData<Boolean>
+        get() = _isLoseRound
+
     private val _isWinGame: MutableLiveData<Boolean> = MutableLiveData()
     val isWinGame: LiveData<Boolean>
         get() = _isWinGame
@@ -102,6 +114,37 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         }
     }
 
+    fun victory(){
+      _isWinGame.value = true
+    }
+
+    fun defeat(){
+      _isLoseGame.value = true
+    }
+
+    fun setWinRound(){
+        isInplay = false
+        _score.value = _score.value?.plus(1)
+        _isWinRound.value = true
+        _roundEndIcon.value = R.drawable.ic_victory
+        _roundEndMessage.value = app.getString(R.string.win_message)
+    }
+
+    fun setLoseRound(){
+        isInplay = false
+        _score.value = _score.value?.minus(1)
+         _isLoseRound.value = true
+        _roundEndIcon.value = R.drawable.ic_loss
+        _roundEndMessage.value = app.getString(R.string.loss_message)
+    }
+
+    fun setUserTiltDirection(tiltDirection: Int){
+        if(!isInplay) {
+            return
+        }
+
+        _userTiltDirection.value = tiltDirection
+    }
 
     fun checkTiltDirectionMatch(directionIndex: Int) {
         if(!isInplay){
@@ -121,40 +164,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
             //setWrongChoice()
             setLoseRound()
         }
-    }
-
-
-    fun victory(){
-      _isWinGame.value = true
-    }
-
-    fun defeat(){
-      _isLoseGame.value = true
-    }
-
-    fun setWinRound(){
-        isInplay = false
-        _score.value = _score.value?.plus(1)
-        //_isWinRound.value = true
-        _roundEndIcon.value = R.drawable.ic_victory
-        _roundEndMessage.value = app.getString(R.string.win_message)
-    }
-
-    fun setLoseRound(){
-        isInplay = false
-        _score.value = _score.value?.minus(1)
-       // _isLoseRound.value = true
-        _roundEndIcon.value = R.drawable.ic_loss
-        _roundEndMessage.value = app.getString(R.string.loss_message)
-    }
-
-
-    fun setUserTiltDirection(tiltDirection: Int){
-        if(!isInplay) {
-            return
-        }
-
-      //  _userTiltDirection.value = tiltDirection
     }
 
 }
