@@ -31,6 +31,6 @@ class GameActivity : AppCompatActivity() {
 
 
     private fun addObservers() {
-//  pairViewModel.onPairedWithHost.observe(this, Observer {onHostDevicePaired(it)})
+        //  pairViewModel.onPairedWithHost.observe(this, Observer {onHostDevicePaired(it)})
     }
 }
