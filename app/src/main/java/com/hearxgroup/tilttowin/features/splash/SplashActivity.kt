@@ -2,8 +2,8 @@ gpackage com.hearxgroup.tilttowin.features.splash
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.hearxgroup.tilttowin.features.extensions.FADE_IN_ACTIVITY
-import com.hearxgroup.tilttowin.features.extensions.navigateToActivity
+import com.hearxgroup.tilttowin.extensions.FADE_IN_ACTIVITY
+import com.hearxgroup.tilttowin.extensions.navigateToActivity
 import com.hearxgroup.tilttowin.features.game.GameActivity
 
 class SplashActivity : AppCompatActivity() {
