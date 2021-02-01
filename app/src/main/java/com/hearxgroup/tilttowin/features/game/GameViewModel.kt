@@ -84,7 +84,16 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         })
     }
 
-    fun setColorAndInitGame(colorIndex: Int){
+    fun roundCountDown(onCompleteCallback: () -> Unit = {}){
+        countDownTime(5, {
+            _countDown.value = it.toInt()
+        } , {
+            onCompleteCallback.invoke()
+            initRound()
+        })
+    }
+
+    fun setArrowColor(colorIndex: Int){
         _colorIndex.value = colorIndex
     }
 
@@ -116,8 +125,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         _score.value = _score.value?.plus(1)
         _attempt.value = _attempt.value?.plus(1)
         _isWinRound.value = true
-        _roundEndIcon.value = R.drawable.ic_victory
-        _roundEndMessage.value = app.getString(R.string.win_message)
     }
 
     fun setLoseRound(){
