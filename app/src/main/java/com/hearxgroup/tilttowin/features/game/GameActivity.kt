@@ -7,13 +7,17 @@ import android.hardware.SensorManager
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.view.animation.Animation
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.hearxgroup.tilttowin.R
 import com.hearxgroup.tilttowin.base.activities.BaseActivity
 import com.hearxgroup.tilttowin.databinding.ActivityGameBinding
+import com.hearxgroup.tilttowin.enum.ArrowColors
+import com.hearxgroup.tilttowin.extensions.blinkView
 import com.hearxgroup.tilttowin.features.game.fragments.ColorSelectorFragment
 import com.hearxgroup.tilttowin.features.game.fragments.RoundFinishedFragment
 import com.hearxgroup.tilttowin.helpers.showDialogFragment
@@ -42,6 +46,10 @@ class GameActivity : BaseActivity(), SensorEventListener {
         addObservers()
 
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
+        sensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     private fun addObservers() {
@@ -49,10 +57,21 @@ class GameActivity : BaseActivity(), SensorEventListener {
         gameViewModel.colorIndex.observe(this, Observer {onColorSet(it)})
         gameViewModel.arrow.observe(this, Observer {onRequiredDirectionSet(it)})
         gameViewModel.userTiltDirection.observe(this, Observer {onUserTiltDirectionSet(it)})
+        gameViewModel.wrongChoice.observe(this, Observer { onWrongDirectionTilted(it) })
         gameViewModel.isWinRound.observe(this, Observer {onWinRound(it)})
         gameViewModel.isLoseRound.observe(this, Observer {onLoseRound(it)})
         gameViewModel.isWinGame.observe(this, Observer {onWinGame(it)})
         gameViewModel.isLoseGame.observe(this, Observer {onLoseGame(it)})
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sensorManager?.unregisterListener(this)
     }
 
     private fun onCountDownFinished(isFinished: Boolean){
@@ -73,6 +92,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
     private fun onColorSet(cIndex: Int){
         clTopBanner.visibility = View.VISIBLE
+        imgDirection.setColorFilter(ContextCompat.getColor(this, ArrowColors.values()[cIndex].colorRes))
         Toast.makeText(this, getString(R.string.game_begun), Toast.LENGTH_SHORT).show()
     }
 
@@ -82,6 +102,12 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
     private fun onUserTiltDirectionSet(directionIndex: Int) {
         gameViewModel.checkTiltDirectionMatch(directionIndex)
+    }
+
+    private fun onWrongDirectionTilted(isWrongDirection: Boolean) {
+        imgDirection.blinkView(0.6f, 0.3f, 150, 2, Animation.ABSOLUTE, 0, {
+            tvTryAgain.visibility = View.VISIBLE
+        })
     }
 
     private fun onWinRound(isWin: Boolean){
@@ -174,6 +200,5 @@ class GameActivity : BaseActivity(), SensorEventListener {
             finish()
         }
     }
-
 
 }

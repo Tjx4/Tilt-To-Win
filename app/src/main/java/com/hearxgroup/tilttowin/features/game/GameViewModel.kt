@@ -36,6 +36,10 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val userTiltDirection: LiveData<Int>
         get() = _userTiltDirection
 
+    private val _wrongChoice: MutableLiveData<Boolean> = MutableLiveData()
+    val wrongChoice: LiveData<Boolean>
+        get() = _wrongChoice
+
     private val _isWinRound: MutableLiveData<Boolean> = MutableLiveData()
     val isWinRound: MutableLiveData<Boolean>
         get() = _isWinRound
@@ -161,8 +165,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
             }
         }
         else{
-            //setWrongChoice()
-            setLoseRound()
+            _wrongChoice.value = true
         }
     }
 
