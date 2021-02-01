@@ -7,6 +7,6 @@
     <string name="lose_title">You lose</string>
     <string name="win_title">You won</string>
     <string name="game_win_message">Congratulations you won the game, your score is  %s</string>
-    <string name="game_lose_message"> "Sorry you lost the game, your score is  %s</string>
+    <string name="game_lose_message"> "Sorry you scored less than the required amount, your score is  %s</string>
     <string name="round_complete">Round Complete</string>
 </resources>

@@ -150,7 +150,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
 
     fun checkTiltDirectionMatch(directionIndex: Int) {
 
-        if(_attempt.value!! > 8){
+        if(_attempt.value!! > 9){
             if(_score.value!! > 4){
                 _isWinGame.value = true
             }
