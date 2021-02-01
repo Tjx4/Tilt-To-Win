@@ -102,10 +102,10 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
 
     fun initRound(){
         isInplay = true
-        setCurrentRoundTiltDirectionAndInterval()
+        setRequiredDirectionAndInterval()
     }
 
-    fun setCurrentRoundTiltDirectionAndInterval(){
+    fun setRequiredDirectionAndInterval(){
         val direction = (0..3).random()
         var interval = ((2..5).random() * 1000).toLong()
 
@@ -113,6 +113,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
             delay(interval)
 
             uiScope.launch {
+                _tiltDirection.value = direction
                 _arrow.value = TiltDirection.values()[direction].directionIcon
             }
         }
