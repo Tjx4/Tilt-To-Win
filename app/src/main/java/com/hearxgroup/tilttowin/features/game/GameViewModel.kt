@@ -3,6 +3,7 @@ package com.hearxgroup.tilttowin.features.game
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.hearxgroup.tilttowin.R
 import com.hearxgroup.tilttowin.base.viewModel.BaseVieModel
 import com.hearxgroup.tilttowin.enum.TiltDirection
 import com.hearxgroup.tilttowin.helpers.countDownTime
@@ -18,10 +19,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     private val _countDown: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(0) }
     val countDown: LiveData<Int>
         get() = _countDown
-
-    private val _currentPlayer: MutableLiveData<String> = MutableLiveData()
-    val currentPlayer: LiveData<String>
-        get() = _currentPlayer
 
     private val _score: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(0) }
     val score: LiveData<Int>
@@ -39,10 +36,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val roundEndIcon: LiveData<Int>
         get() = _roundEndIcon
 
-    private val _arrowColorIndex: MutableLiveData<Int> = MutableLiveData()
-    val arrowColorIndex: LiveData<Int>
-        get() = _arrowColorIndex
-
     private val _roundEndMessage: MutableLiveData<String> = MutableLiveData()
     val roundEndMessage: LiveData<String>
         get() = _roundEndMessage
@@ -51,11 +44,8 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val colorIndex: LiveData<Int>
         get() = _colorIndex
 
-    private val _initRound: MutableLiveData<Boolean> = MutableLiveData()
-    val initRound: LiveData<Boolean>
-        get() = _initRound
-
     private var interval: Long = 2
+    private var isInplay = false
 
     init {
         startCountDown()
@@ -73,13 +63,18 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         countDownTime(5, {
             _countDown.value = it.toInt()
         } , {
-            _initRound.value = true
+            initRound()
         })
     }
 
     fun setColorAndInitGame(colorIndex: Int){
         _colorIndex.value = colorIndex
-        _initRound.value = true
+        initRound()
+    }
+
+    fun initRound(){
+        isInplay = true
+        setCurrentRoundTiltDirectionAndInterval()
     }
 
     fun setCurrentRoundTiltDirectionAndInterval(){
@@ -95,5 +90,31 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         }
     }
 
+    fun setWinRound(){
+        isInplay = false
+        _score.value = _score.value?.plus(1)
+        //_isWinRound.value = true
+
+        _roundEndIcon.value = R.drawable.ic_victory
+        _roundEndMessage.value = "Congratulations you won this round"
+    }
+
+    fun setLoseRound(){
+        isInplay = false
+        _score.value = _score.value?.minus(1)
+       // _isLoseRound.value = true
+
+        _roundEndIcon.value = R.drawable.ic_loss
+        _roundEndMessage.value = "Sorry you have lost this round"
+    }
+
+
+    fun setUserTiltDirection(tiltDirection: Int){
+        if(!isInplay) {
+            return
+        }
+
+      //  _userTiltDirection.value = tiltDirection
+    }
 
 }
