@@ -66,7 +66,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         android:id="@+id/imgDirection"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        android:src="@{gameViewModel.arrow, default=@drawable/ic_back}"
+        android:src="@{gameViewModel.arrow, default=@drawable/ic_def}"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -83,74 +83,6 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
         app:layout_constraintTop_toBottomOf="@+id/imgDirection"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
-
-
-
-
-
-
-
-
-
-
-
-
-
-    <LinearLayout
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="@dimen/small_margin"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent">
-
-        <TextView
-            android:id="@+id/tvUserTitl"
-            style="@style/MediumDarkTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tilt device"/>
-
-        <TextView
-            android:id="@+id/tvUserTitlGegrees"
-            style="@style/MediumDarkTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tilt degree"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_margin="@dimen/small_margin"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-
-        <Button
-            android:id="@+id/btnLoss"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:text="Loss"
-            android:textSize="@dimen/small_text"
-            android:background="@drawable/round_button_background"
-            android:layout_marginLeft="@dimen/small_margin"
-            android:onClick="onLossButtonClicked"/>
-
-        <Button
-            android:id="@+id/btnDefeat"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:text="Defeat"
-            android:textSize="@dimen/small_text"
-            android:background="@drawable/round_button_background"
-            android:layout_marginLeft="@dimen/small_margin"
-            android:onClick="onDefeatButtonClicked"/>
-
-    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 
