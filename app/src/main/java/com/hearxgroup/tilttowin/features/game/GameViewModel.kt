@@ -84,18 +84,8 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         })
     }
 
-    fun roundCountDown(onCompleteCallback: () -> Unit = {}){
-        countDownTime(5, {
-            _countDown.value = it.toInt()
-        } , {
-            onCompleteCallback.invoke()
-            initRound()
-        })
-    }
-
     fun setColorAndInitGame(colorIndex: Int){
         _colorIndex.value = colorIndex
-        initRound()
     }
 
     fun initRound(){
@@ -169,7 +159,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
                 _wrongChoice.value = true
             }
         }
-
 
     }
 

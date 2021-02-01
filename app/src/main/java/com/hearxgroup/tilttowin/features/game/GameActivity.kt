@@ -19,7 +19,6 @@ import com.hearxgroup.tilttowin.databinding.ActivityGameBinding
 import com.hearxgroup.tilttowin.enum.ArrowColors
 import com.hearxgroup.tilttowin.extensions.blinkView
 import com.hearxgroup.tilttowin.features.game.fragments.ColorSelectorFragment
-import com.hearxgroup.tilttowin.features.game.fragments.RoundFinishedFragment
 import com.hearxgroup.tilttowin.helpers.showDialogFragment
 import com.hearxgroup.tilttowin.helpers.showErrorAlert
 import com.hearxgroup.tilttowin.helpers.showSuccessAlert
@@ -76,12 +75,6 @@ class GameActivity : BaseActivity(), SensorEventListener {
         sensorManager?.unregisterListener(this)
     }
 
-    private fun onCountDownFinished(isFinished: Boolean){
-        tvCountDown.visibility = View.GONE
-        clTopBanner.visibility = View.VISIBLE
-        Toast.makeText(this, getString(R.string.game_begun), Toast.LENGTH_SHORT).show()
-    }
-
     private fun showColorSelector() {
         val colorSelectorFragment = ColorSelectorFragment.newInstance()
         colorSelectorFragment?.isCancelable = false
@@ -98,6 +91,13 @@ class GameActivity : BaseActivity(), SensorEventListener {
         gameViewModel.startCountDown()
     }
 
+    private fun onCountDownFinished(isFinished: Boolean){
+        tvCountDown.visibility = View.GONE
+        clTopBanner.visibility = View.VISIBLE
+        Toast.makeText(this, getString(R.string.game_begun), Toast.LENGTH_SHORT).show()
+        gameViewModel.initRound()
+    }
+
     private fun onRequiredDirectionSet(dIndex: Int){
         imgDirection.visibility = View.VISIBLE
         imgDirection.setColorFilter(ContextCompat.getColor(this, ArrowColors.values()[gameViewModel.colorIndex.value!!].colorRes))
@@ -108,30 +108,23 @@ class GameActivity : BaseActivity(), SensorEventListener {
     }
 
     private fun onWrongDirectionTilted(isWrongDirection: Boolean) {
-        //lose if
         imgDirection.blinkView(0.6f, 0.3f, 150, 2, Animation.ABSOLUTE, 0, {
             tvTryAgain.visibility = View.VISIBLE
         })
     }
 
     private fun onWinRound(isWin: Boolean){
-        imgDirection.visibility = View.GONE
-        showRoundDoneFragment()
+        hideArrowAndInitRound()
+
     }
 
     private fun onLoseRound(isLose: Boolean) {
-        imgDirection.visibility = View.GONE
-        showRoundDoneFragment()
+        hideArrowAndInitRound()
     }
 
-    private fun showRoundDoneFragment() {
-        val roundFinishedFragment = RoundFinishedFragment.newInstance()
-        showDialogFragment(
-            getString(R.string.round_complete),
-            null,
-            roundFinishedFragment,
-            this
-        )
+    private fun hideArrowAndInitRound() {
+        imgDirection.visibility = View.GONE
+        gameViewModel.initRound()
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
