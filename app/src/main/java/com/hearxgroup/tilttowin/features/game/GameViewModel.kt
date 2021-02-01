@@ -1,6 +1,7 @@
 package com.hearxgroup.tilttowin.features.game
 
 import android.app.Application
+import androidx.databinding.adapters.NumberPickerBindingAdapter.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.hearxgroup.tilttowin.base.viewModel.BaseVieModel
@@ -11,7 +12,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     var arrow: MutableLiveData<Int> = MutableLiveData()
         get() = _arrow
 
-    private val _countDown: MutableLiveData<Int> = MutableLiveData()
+    private val _countDown: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(0) }
     val countDown: LiveData<Int>
         get() = _countDown
 
