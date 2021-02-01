@@ -38,6 +38,7 @@ class GameActivity : BaseActivity() {
         gameViewModel.isCountDownFinished.observe(this, Observer {onCountDownFinished(it)})
         gameViewModel.colorIndex.observe(this, Observer {onColorSet(it)})
         gameViewModel.initRound.observe(this, Observer {onInitRound(it)})
+       // gameViewModel.arrow.observe(this, Observer {onInitRound(it)})
     }
 
     private fun onCountDownFinished(isFinished: Boolean){
@@ -59,11 +60,9 @@ class GameActivity : BaseActivity() {
     private fun onColorSet(cIndx: Int){
         clTopBanner.visibility = View.VISIBLE
         Toast.makeText(this, getString(R.string.game_begun), Toast.LENGTH_SHORT).show()
-
-        //Init round
     }
 
     private fun onInitRound(initRound: Boolean){
-        val ldfd = initRound
+        //set Gage active
     }
 }

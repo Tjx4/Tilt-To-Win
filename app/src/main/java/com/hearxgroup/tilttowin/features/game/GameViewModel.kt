@@ -4,7 +4,10 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.hearxgroup.tilttowin.base.viewModel.BaseVieModel
+import com.hearxgroup.tilttowin.enum.TiltDirection
 import com.hearxgroup.tilttowin.helpers.countDownTime
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class GameViewModel(application: Application) : BaseVieModel(application) {
 
@@ -23,6 +26,10 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     private val _score: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(0) }
     val score: LiveData<Int>
         get() = _score
+
+    private val _attempts: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(0) }
+    val attempts: LiveData<Int>
+        get() = _attempts
 
     private val _isCountDownFinished: MutableLiveData<Boolean> = MutableLiveData()
     val isCountDownFinished: LiveData<Boolean>
@@ -70,7 +77,23 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         })
     }
 
-    fun setColorIndx(colorIndex: Int){
+    fun setColorAndInitGame(colorIndex: Int){
         _colorIndex.value = colorIndex
+        _initRound.value = true
     }
+
+    fun setCurrentRoundTiltDirectionAndInterval(){
+        val direction = (0..3).random()
+        var interval = ((2..5).random() * 1000).toLong()
+
+        ioScope.launch {
+            delay(interval)
+
+            uiScope.launch {
+                _arrow.value = TiltDirection.values()[direction].directionIcon
+            }
+        }
+    }
+
+
 }
