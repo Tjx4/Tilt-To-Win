@@ -105,6 +105,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
     }
 
     private fun onWrongDirectionTilted(isWrongDirection: Boolean) {
+        //lose if
         imgDirection.blinkView(0.6f, 0.3f, 150, 2, Animation.ABSOLUTE, 0, {
             tvTryAgain.visibility = View.VISIBLE
         })
@@ -184,17 +185,19 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
     private fun onWinGame(isWin: Boolean){
         imgDirection.visibility = View.GONE
-        showSuccessAlert(this, getString(R.string.win_title), getString(R.string.game_win_message), getString(R.string.close_app)) {
+        val score = "${gameViewModel.score}/${gameViewModel.arrow}"
+        showSuccessAlert(this, getString(R.string.win_title), getString(R.string.game_win_message, score), getString(R.string.close_app)) {
             finish()
         }
     }
 
     private fun onLoseGame(isLose: Boolean) {
         imgDirection.visibility = View.GONE
+        val score = "${gameViewModel.score}/${gameViewModel.arrow}"
         showErrorAlert(
             this,
             getString(R.string.lose_title),
-            getString(R.string.game_lose_message),
+            getString(R.string.game_lose_message, score),
             getString(R.string.close_app)
         ) {
             finish()

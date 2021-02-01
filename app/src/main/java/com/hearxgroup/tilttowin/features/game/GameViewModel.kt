@@ -167,7 +167,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         }
 
         if(directionIndex == _tiltDirection.value){
-            if(_score.value!! > 8){
+            if(_attempt.value!! > 9){
                 victory()
             }
             else{
