@@ -5,12 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Animation
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hearxgroup.tilttowin.R
 import com.hearxgroup.tilttowin.adapters.ArrowColorAdapter
 import com.hearxgroup.tilttowin.base.fragments.BaseDialogFragment
 import com.hearxgroup.tilttowin.enum.ArrowColors
+import com.hearxgroup.tilttowin.extensions.blinkView
 import com.hearxgroup.tilttowin.features.game.GameActivity
 
 class ColorSelectorFragment : BaseDialogFragment(), ArrowColorAdapter.ColorClickListener {
@@ -25,19 +27,19 @@ class ColorSelectorFragment : BaseDialogFragment(), ArrowColorAdapter.ColorClick
 
     private fun initViews(parentView: View) {
         colorsRv = parentView.findViewById(R.id.rvColors)
-
         val searchTypeLayoutManager = GridLayoutManager(gameActivity, 2)
         searchTypeLayoutManager.initialPrefetchItemCount = ArrowColors.values().size
         colorsRv?.layoutManager = searchTypeLayoutManager
         val arrowColorAdapter = ArrowColorAdapter(gameActivity, ArrowColors.values())
         arrowColorAdapter.setOnHeroClickListener(this)
         colorsRv.adapter = arrowColorAdapter
-
     }
 
     override fun onColorClicked(view: View, position: Int) {
-        gameActivity.gameViewModel.arrowColorIndex.value = position
-        dismiss()
+        view.blinkView(0.6f, 0.5f, 100, 2, Animation.ABSOLUTE, 0, {
+            gameActivity.gameViewModel.setColorIndx(position)
+            dismiss()
+        })
     }
 
     override fun onAttach(context: Context) {

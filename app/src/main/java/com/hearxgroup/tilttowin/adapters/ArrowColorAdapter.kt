@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.hearxgroup.tilttowin.R
@@ -22,13 +23,13 @@ class ArrowColorAdapter(var context: Context, private val arrowColors: Array<Arr
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val color = arrowColors[position]
-        holder.parentFr.setBackgroundColor(ContextCompat.getColor(context, color.colorRes))
+        holder.parentCl.setBackgroundColor(ContextCompat.getColor(context, color.colorRes))
         holder.colorNameTv.setTextColor(ContextCompat.getColor(context, color.textColor))
         holder.colorNameTv.text = color.colorName
     }
 
     inner class ViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView), View.OnClickListener {
-        internal var parentFr = itemView.findViewById<FrameLayout>(R.id.frParent)
+        internal var parentCl = itemView.findViewById<ConstraintLayout>(R.id.clColorParent)
         internal var colorNameTv = itemView.findViewById<TextView>(R.id.tvColorName)
 
         init {

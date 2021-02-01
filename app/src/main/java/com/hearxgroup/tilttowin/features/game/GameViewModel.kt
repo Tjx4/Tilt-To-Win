@@ -33,7 +33,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         get() = _roundEndIcon
 
     private val _arrowColorIndex: MutableLiveData<Int> = MutableLiveData()
-    var arrowColorIndex: MutableLiveData<Int> = MutableLiveData()
+    val arrowColorIndex: LiveData<Int>
         get() = _arrowColorIndex
 
     private val _roundEndMessage: MutableLiveData<String> = MutableLiveData()
@@ -68,5 +68,9 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         } , {
             _initRound.value = true
         })
+    }
+
+    fun setColorIndx(colorIndex: Int){
+        _colorIndex.value = colorIndex
     }
 }

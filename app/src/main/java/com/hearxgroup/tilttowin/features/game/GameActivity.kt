@@ -57,6 +57,7 @@ class GameActivity : BaseActivity() {
     }
 
     private fun onColorSet(cIndx: Int){
+        clTopBanner.visibility = View.VISIBLE
         Toast.makeText(this, getString(R.string.game_begun), Toast.LENGTH_SHORT).show()
 
         //Init round
