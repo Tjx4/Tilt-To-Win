@@ -16,6 +16,8 @@ import com.hearxgroup.tilttowin.base.activities.BaseActivity
 import com.hearxgroup.tilttowin.databinding.ActivityGameBinding
 import com.hearxgroup.tilttowin.features.game.fragments.ColorSelectorFragment
 import com.hearxgroup.tilttowin.helpers.showDialogFragment
+import com.hearxgroup.tilttowin.helpers.showErrorAlert
+import com.hearxgroup.tilttowin.helpers.showSuccessAlert
 import kotlinx.android.synthetic.main.activity_game.*
 
 class GameActivity : BaseActivity(), SensorEventListener {
@@ -44,6 +46,8 @@ class GameActivity : BaseActivity(), SensorEventListener {
     private fun addObservers() {
         gameViewModel.isCountDownFinished.observe(this, Observer {onCountDownFinished(it)})
         gameViewModel.colorIndex.observe(this, Observer {onColorSet(it)})
+        gameViewModel.isWinGame.observe(this, Observer {onWinGame(it)})
+        gameViewModel.isLoseGame.observe(this, Observer {onLoseGame(it)})
     }
 
     private fun onCountDownFinished(isFinished: Boolean){
@@ -65,6 +69,25 @@ class GameActivity : BaseActivity(), SensorEventListener {
     private fun onColorSet(cIndx: Int){
         clTopBanner.visibility = View.VISIBLE
         Toast.makeText(this, getString(R.string.game_begun), Toast.LENGTH_SHORT).show()
+    }
+
+    private fun onWinGame(isWin: Boolean){
+        imgDirection.visibility = View.GONE
+        showSuccessAlert(this, getString(R.string.win_title), getString(R.string.game_win_message), getString(R.string.close_app)) {
+            finish()
+        }
+    }
+
+    private fun onLoseGame(isLose: Boolean) {
+        imgDirection.visibility = View.GONE
+        showErrorAlert(
+            this,
+            getString(R.string.lose_title),
+             getString(R.string.game_lose_message),
+            getString(R.string.close_app)
+        ) {
+            finish()
+        }
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
