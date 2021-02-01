@@ -36,7 +36,7 @@ class ColorSelectorFragment : BaseDialogFragment(), ArrowColorAdapter.ColorClick
     }
 
     override fun onColorClicked(view: View, position: Int) {
-        view.blinkView(0.6f, 0.5f, 100, 2, Animation.ABSOLUTE, 0, {
+        view.blinkView(0.6f, 0.2f, 130, 2, Animation.ABSOLUTE, 0, {
             gameActivity.gameViewModel.setColorIndx(position)
             dismiss()
         })
