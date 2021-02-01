@@ -11,7 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.TiltToWin">
-        <activity android:name=".features.game.GameActivity"></activity>
+        <activity
+            android:name=".features.game.GameActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/NoActionBarTheme"/>
 
         <activity
             android:name=".features.splash.SplashActivity"

@@ -10,7 +10,6 @@ class GameViewModelFactory (private val application: Application) : ViewModelPro
         if(modelClass.isAssignableFrom(GameViewModel::class.java)){
             return GameViewModel(application) as T
         }
-
         throw IllegalArgumentException("Unknown ViewModel Class")
     }
 }

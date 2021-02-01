@@ -6,6 +6,7 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="darkText">#000</color>
+    <color name="darkBackground">#000</color>
     <color name="lightBackground">#FFF</color>
     <color name="splashBackground">#EEE</color>
 </resources>
