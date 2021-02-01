@@ -2,7 +2,7 @@
     <string name="app_name">Tilt To Win</string>
     <string name="game_begun">Game has Begun!</string>
     <string name="win_message">Congratulations you won this round</string>
-    <string name="loss_message">Sorry you have lost this round</string>
+    <string name="loss_message">Sorry you reacted too soon</string>
     <string name="close_app">Close app</string>
     <string name="lose_title">You lose</string>
     <string name="win_title">You won</string>
