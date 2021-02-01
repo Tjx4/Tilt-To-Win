@@ -124,14 +124,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         }
     }
 
-    fun victory(){
-      _isWinGame.value = true
-    }
-
-    fun defeat(){
-      _isLoseGame.value = true
-    }
-
     fun setWinRound(){
         isInplay = false
         isLegal = false
@@ -166,17 +158,24 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
             return
         }
 
-        if(directionIndex == _tiltDirection.value){
-            if(_attempt.value!! > 9){
-                victory()
+        if(_attempt.value!! > 9){
+            if(_score.value!! > 4){
+                _isWinGame.value = true
             }
             else{
-                setWinRound()
+                _isLoseGame.value = true
             }
         }
         else{
-            _wrongChoice.value = true
+            if(directionIndex == _tiltDirection.value){
+                setWinRound()
+            }
+            else{
+                _wrongChoice.value = true
+            }
         }
+
+
     }
 
 }

@@ -157,7 +157,6 @@ class GameActivity : BaseActivity(), SensorEventListener {
             }
 
         } else {
-
             val left = yAngle < -requiredAngle
             val right = yAngle > requiredAngle
 
