@@ -95,12 +95,12 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
     private fun onColorSet(cIndex: Int){
         tvCountDown.visibility = View.VISIBLE
-        imgDirection.setColorFilter(ContextCompat.getColor(this, ArrowColors.values()[cIndex].colorRes))
         gameViewModel.startCountDown()
     }
 
     private fun onRequiredDirectionSet(dIndex: Int){
         imgDirection.visibility = View.VISIBLE
+        imgDirection.setColorFilter(ContextCompat.getColor(this, ArrowColors.values()[gameViewModel.colorIndex.value!!].colorRes))
     }
 
     private fun onUserTiltDirectionSet(directionIndex: Int) {
@@ -186,16 +186,21 @@ class GameActivity : BaseActivity(), SensorEventListener {
     }
 
     private fun onWinGame(isWin: Boolean){
+        sensorManager?.unregisterListener(this)
         imgDirection.visibility = View.GONE
-        val score = "${gameViewModel.score}/${gameViewModel.arrow}"
-        showSuccessAlert(this, getString(R.string.win_title), getString(R.string.game_win_message, score), getString(R.string.close_app)) {
+        val score = "${gameViewModel.score.value}/${gameViewModel.attempts.value}"
+        showSuccessAlert(this,
+            getString(R.string.win_title),
+            getString(R.string.game_win_message, score),
+            getString(R.string.close_app)) {
             finish()
         }
     }
 
     private fun onLoseGame(isLose: Boolean) {
+        sensorManager?.unregisterListener(this)
         imgDirection.visibility = View.GONE
-        val score = "${gameViewModel.score}/${gameViewModel.arrow}"
+        val score = "${gameViewModel.score.value}/${gameViewModel.attempts.value}"
         showErrorAlert(
             this,
             getString(R.string.lose_title),

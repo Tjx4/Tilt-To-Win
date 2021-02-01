@@ -149,12 +149,8 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     }
 
     fun checkTiltDirectionMatch(directionIndex: Int) {
-        if(!isLegal){
-            setLoseRound()
-            return
-        }
 
-        if(_attempt.value!! > 9){
+        if(_attempt.value!! > 8){
             if(_score.value!! > 4){
                 _isWinGame.value = true
             }
@@ -163,7 +159,10 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
             }
         }
         else{
-            if(directionIndex == _tiltDirection.value){
+            if(!isLegal){
+                setLoseRound()
+            }
+            else if(directionIndex == _tiltDirection.value){
                 setWinRound()
             }
             else{
