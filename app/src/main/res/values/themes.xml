@@ -21,7 +21,30 @@
         <item name="android:windowEnterAnimation">@anim/fade_in</item>
         <item name="android:windowExitAnimation">@anim/fade_out</item>
     </style>
+    <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
+    </style>
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:background">@drawable/splash_background</item>
+    </style>
+    <style name="BaseTextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="MediumTextView" parent="BaseTextView">
+        <item name="android:textSize">@dimen/medium_text</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="MediumDarkTextView" parent="MediumTextView">
+        <item name="android:textColor">@color/darkText</item>
+    </style>
+    <style name="MediumLightTextView" parent="MediumTextView">
+        <item name="android:textColor">@color/lightText</item>
+    </style>
+    <style name="xlargeTextView" parent="BaseTextView">
+        <item name="android:textSize">@dimen/xlarge_text</item>
+        <item name="android:gravity">center</item>
+    </style>
+    <style name="XLargeDarkTextView" parent="xlargeTextView">
+        <item name="android:textColor">@color/darkText</item>
     </style>
 </resources>
