@@ -1,6 +1,5 @@
 package com.hearxgroup.tilttowin.features.game
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -9,10 +8,13 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.hearxgroup.tilttowin.R
+import com.hearxgroup.tilttowin.base.activities.BaseActivity
 import com.hearxgroup.tilttowin.databinding.ActivityGameBinding
+import com.hearxgroup.tilttowin.features.game.fragments.ColorSelectorFragment
+import com.hearxgroup.tilttowin.helpers.showDialogFragment
 import kotlinx.android.synthetic.main.activity_game.*
 
-class GameActivity : AppCompatActivity() {
+class GameActivity : BaseActivity() {
     private lateinit var binding: ActivityGameBinding
     lateinit var gameViewModel: GameViewModel
 
@@ -32,22 +34,35 @@ class GameActivity : AppCompatActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-
     private fun addObservers() {
-        gameViewModel.isCountDownFininished.observe(this, Observer {onCountDownFinished(it)})
-        //gameViewModel.colorIndex.observe(this, Observer {onCountDownFinished(it)})
+        gameViewModel.isCountDownFinished.observe(this, Observer {onCountDownFinished(it)})
+        gameViewModel.colorIndex.observe(this, Observer {onColorSet(it)})
+        gameViewModel.initRound.observe(this, Observer {onInitRound(it)})
     }
 
     private fun onCountDownFinished(isFinished: Boolean){
         tvCountDown.visibility = View.GONE
-        onCountDownFinished()
+        showSelectColor()
     }
 
-    private fun onCountDownFinished(){
-
+    private fun showSelectColor() {
+        val colorSelectorFragment = ColorSelectorFragment.newInstance()
+        colorSelectorFragment?.isCancelable = false
+        showDialogFragment(
+            "Color selector",
+            R.layout.fragment_color_selector,
+            colorSelectorFragment,
+            this
+        )
     }
 
-    private fun onCountDownFinished(cIndx: Int){
-        Toast.makeText(this, "Game has Begun!", Toast.LENGTH_SHORT).show()
+    private fun onColorSet(cIndx: Int){
+        Toast.makeText(this, getString(R.string.game_begun), Toast.LENGTH_SHORT).show()
+
+        //Init round
+    }
+
+    private fun onInitRound(initRound: Boolean){
+        val ldfd = initRound
     }
 }

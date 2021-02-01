@@ -7,6 +7,8 @@ const val GAME_ISHOST = "game_ishost"
 const val GAME_PARTICIPANT = "game_participant"
 const val ACTIVITY_TRANSITION = "activity_transition"
 const val LAYOUT = "layout"
+const val TITLE = "tittle"
+const val CATID = "catId"
 
 const val FDB_GAMES = "games"
 const val DB_GAME_PARTICIPANTS = "participants"

@@ -1,7 +1,6 @@
 package com.hearxgroup.tilttowin.features.game
 
 import android.app.Application
-import androidx.databinding.adapters.NumberPickerBindingAdapter.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.hearxgroup.tilttowin.base.viewModel.BaseVieModel
@@ -25,9 +24,29 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val score: LiveData<Int>
         get() = _score
 
-    private val _isCountDownFininished: MutableLiveData<Boolean> = MutableLiveData()
-    val isCountDownFininished: LiveData<Boolean>
-        get() = _isCountDownFininished
+    private val _isCountDownFinished: MutableLiveData<Boolean> = MutableLiveData()
+    val isCountDownFinished: LiveData<Boolean>
+        get() = _isCountDownFinished
+
+    private val _roundEndIcon: MutableLiveData<Int> = MutableLiveData()
+    val roundEndIcon: LiveData<Int>
+        get() = _roundEndIcon
+
+    private val _arrowColorIndex: MutableLiveData<Int> = MutableLiveData()
+    var arrowColorIndex: MutableLiveData<Int> = MutableLiveData()
+        get() = _arrowColorIndex
+
+    private val _roundEndMessage: MutableLiveData<String> = MutableLiveData()
+    val roundEndMessage: LiveData<String>
+        get() = _roundEndMessage
+
+    private val _colorIndex: MutableLiveData<Int> = MutableLiveData()
+    val colorIndex: LiveData<Int>
+        get() = _colorIndex
+
+    private val _initRound: MutableLiveData<Boolean> = MutableLiveData()
+    val initRound: LiveData<Boolean>
+        get() = _initRound
 
     private var interval: Long = 2
 
@@ -39,7 +58,15 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         countDownTime(3, {
             _countDown.value = it.toInt()
         } , {
-            _isCountDownFininished.value = true
+            _isCountDownFinished.value = true
+        })
+    }
+
+    fun roundCountDown(onCompleteCallback: () -> Unit = {}){
+        countDownTime(5, {
+            _countDown.value = it.toInt()
+        } , {
+            _initRound.value = true
         })
     }
 }

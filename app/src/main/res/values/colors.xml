@@ -6,7 +6,12 @@
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>
     <color name="darkText">#000</color>
+    <color name="lightText">#EEE</color>
     <color name="darkBackground">#000</color>
     <color name="lightBackground">#FFF</color>
     <color name="splashBackground">#EEE</color>
+    <color name="redArrow">#ff1100</color>
+    <color name="blueArrow">#0088cc</color>
+    <color name="yellowArrow">#ffff3f</color>
+    <color name="greenArrow">#00ff3f</color>
 </resources>
