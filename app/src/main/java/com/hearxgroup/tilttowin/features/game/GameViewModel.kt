@@ -74,6 +74,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
 
     private var interval: Long = 2
     private var isInplay = false
+    private var isLegal = false
 
     init {
         startCountDown()
@@ -114,8 +115,11 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
             delay(interval)
 
             uiScope.launch {
-                _tiltDirection.value = direction
-                _arrow.value = TiltDirection.values()[direction].directionIcon
+                if(isInplay){
+                    isLegal = true
+                    _tiltDirection.value = direction
+                    _arrow.value = TiltDirection.values()[direction].directionIcon
+                }
             }
         }
     }
@@ -130,6 +134,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
 
     fun setWinRound(){
         isInplay = false
+        isLegal = false
         _score.value = _score.value?.plus(1)
         _attempt.value = _attempt.value?.plus(1)
         _isWinRound.value = true
@@ -139,6 +144,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
 
     fun setLoseRound(){
         isInplay = false
+        isLegal = false
         _score.value = _score.value?.minus(1)
         _attempt.value = _attempt.value?.plus(1)
          _isLoseRound.value = true
@@ -155,7 +161,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     }
 
     fun checkTiltDirectionMatch(directionIndex: Int) {
-        if(!isInplay){
+        if(!isLegal){
             setLoseRound()
             return
         }

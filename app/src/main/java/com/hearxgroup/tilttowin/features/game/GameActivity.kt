@@ -55,7 +55,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
     private fun addObservers() {
         gameViewModel.isCountDownFinished.observe(this, Observer {onCountDownFinished(it)})
         gameViewModel.colorIndex.observe(this, Observer {onColorSet(it)})
-        gameViewModel.arrow.observe(this, Observer {onRequiredDirectionSet(it)})
+        gameViewModel.tiltDirection.observe(this, Observer {onRequiredDirectionSet(it)})
         gameViewModel.userTiltDirection.observe(this, Observer {onUserTiltDirectionSet(it)})
         gameViewModel.wrongChoice.observe(this, Observer { onWrongDirectionTilted(it) })
         gameViewModel.isWinRound.observe(this, Observer {onWinRound(it)})
