@@ -19,6 +19,7 @@ import com.hearxgroup.tilttowin.databinding.ActivityGameBinding
 import com.hearxgroup.tilttowin.enum.ArrowColors
 import com.hearxgroup.tilttowin.extensions.blinkView
 import com.hearxgroup.tilttowin.features.game.fragments.ColorSelectorFragment
+import com.hearxgroup.tilttowin.features.game.fragments.RoundFinishedFragment
 import com.hearxgroup.tilttowin.helpers.showDialogFragment
 import com.hearxgroup.tilttowin.helpers.showErrorAlert
 import com.hearxgroup.tilttowin.helpers.showSuccessAlert
@@ -119,7 +120,13 @@ class GameActivity : BaseActivity(), SensorEventListener {
     }
 
     private fun onLoseRound(isLose: Boolean) {
-        hideArrowAndInitRound()
+        val roundFinishedFragment = RoundFinishedFragment.newInstance()
+        showDialogFragment(
+            getString(R.string.round_complete),
+            null,
+            roundFinishedFragment,
+            this
+        )
     }
 
     private fun hideArrowAndInitRound() {

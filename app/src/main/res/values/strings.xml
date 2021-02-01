@@ -9,4 +9,6 @@
     <string name="game_win_message">Congratulations you won the game, your score is  %s</string>
     <string name="game_lose_message"> "Sorry you scored less than the required amount, your score is  %s</string>
     <string name="round_complete">Round Complete</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
