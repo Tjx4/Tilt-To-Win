@@ -76,10 +76,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     private var isInplay = false
     private var isLegal = false
 
-    init {
-        startCountDown()
-    }
-
     fun startCountDown(){
         countDownTime(3, {
             _countDown.value = it.toInt()

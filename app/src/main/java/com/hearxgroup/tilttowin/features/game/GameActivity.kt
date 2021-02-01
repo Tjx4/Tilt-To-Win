@@ -50,6 +50,8 @@ class GameActivity : BaseActivity(), SensorEventListener {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
         sensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+
+        showColorSelector()
     }
 
     private fun addObservers() {
@@ -76,10 +78,11 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
     private fun onCountDownFinished(isFinished: Boolean){
         tvCountDown.visibility = View.GONE
-        showSelectColor()
+        clTopBanner.visibility = View.VISIBLE
+        Toast.makeText(this, getString(R.string.game_begun), Toast.LENGTH_SHORT).show()
     }
 
-    private fun showSelectColor() {
+    private fun showColorSelector() {
         val colorSelectorFragment = ColorSelectorFragment.newInstance()
         colorSelectorFragment?.isCancelable = false
         showDialogFragment(
@@ -91,9 +94,9 @@ class GameActivity : BaseActivity(), SensorEventListener {
     }
 
     private fun onColorSet(cIndex: Int){
-        clTopBanner.visibility = View.VISIBLE
+        tvCountDown.visibility = View.VISIBLE
         imgDirection.setColorFilter(ContextCompat.getColor(this, ArrowColors.values()[cIndex].colorRes))
-        Toast.makeText(this, getString(R.string.game_begun), Toast.LENGTH_SHORT).show()
+        gameViewModel.startCountDown()
     }
 
     private fun onRequiredDirectionSet(dIndex: Int){
