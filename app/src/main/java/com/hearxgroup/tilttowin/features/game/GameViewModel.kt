@@ -24,9 +24,9 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val score: LiveData<Int>
         get() = _score
 
-    private val _attempts: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(0) }
+    private val _attempt: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(0) }
     val attempts: LiveData<Int>
-        get() = _attempts
+        get() = _attempt
 
     private val _isCountDownFinished: MutableLiveData<Boolean> = MutableLiveData()
     val isCountDownFinished: LiveData<Boolean>
@@ -91,6 +91,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         countDownTime(5, {
             _countDown.value = it.toInt()
         } , {
+            onCompleteCallback.invoke()
             initRound()
         })
     }
@@ -130,6 +131,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     fun setWinRound(){
         isInplay = false
         _score.value = _score.value?.plus(1)
+        _attempt.value = _attempt.value?.plus(1)
         _isWinRound.value = true
         _roundEndIcon.value = R.drawable.ic_victory
         _roundEndMessage.value = app.getString(R.string.win_message)
@@ -138,6 +140,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     fun setLoseRound(){
         isInplay = false
         _score.value = _score.value?.minus(1)
+        _attempt.value = _attempt.value?.plus(1)
          _isLoseRound.value = true
         _roundEndIcon.value = R.drawable.ic_loss
         _roundEndMessage.value = app.getString(R.string.loss_message)
