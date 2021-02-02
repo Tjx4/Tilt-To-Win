@@ -153,6 +153,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         roundTimer?.cancel()
         isInplay = false
         isLegal = false
+        _score.value = _score.value?.plus(1)
         _attempt.value = _attempt.value?.plus(1)
         _isWinRound.value = true
     }
