@@ -78,7 +78,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         get() = _tiltDirection
 
     private var roundTimer: CountDownTimer? = null
-    private var interval: Long = 2
+    private var maxAttempts: Int = 10
     private var isInplay = false
     private var isLegal = false
     private var stopTimer  = false
@@ -110,18 +110,22 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     }
 
     private fun checkAndSetTooLateResponse() {
-        if (_attempt.value!! > 9) {
-            if (_score.value!! > 4) {
-                _isWinGame.value = true
-            } else {
-                _isLoseGame.value = true
-            }
-
-            roundTimer?.cancel()
-        } else {
+        if (_attempt.value!! < maxAttempts) {
             _isTimeRunOut.value = true
             tooLateResponseLoss()
+        } else {
+            showGameWinOrLose()
         }
+    }
+
+    private fun showGameWinOrLose() {
+        if (_score.value!! > 4) {
+            _isWinGame.value = true
+        } else {
+            _isLoseGame.value = true
+        }
+
+        roundTimer?.cancel()
     }
 
     fun setArrowColor(colorIndex: Int){
@@ -189,17 +193,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     }
 
     fun checkTiltDirectionMatch(directionIndex: Int) {
-        if(_attempt.value!! > 9){
-            if(_score.value!! > 4){
-                _isWinGame.value = true
-            }
-            else{
-                _isLoseGame.value = true
-            }
-
-            roundTimer?.cancel()
-        }
-        else{
+        if(_attempt.value!! < maxAttempts){
             if(!isLegal){
                 tooEarlyResponseLoss()
             }
@@ -209,6 +203,9 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
             else{
                 _wrongChoice.value = true
             }
+        }
+        else {
+            showGameWinOrLose()
         }
 
     }
