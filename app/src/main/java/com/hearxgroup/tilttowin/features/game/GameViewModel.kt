@@ -153,7 +153,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         roundTimer?.cancel()
         isInplay = false
         isLegal = false
-        _score.value = _score.value?.plus(1)
         _attempt.value = _attempt.value?.plus(1)
         _isWinRound.value = true
     }
@@ -162,7 +161,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         roundTimer?.cancel()
         isInplay = false
         isLegal = false
-        _score.value = _score.value?.minus(1)
         _attempt.value = _attempt.value?.plus(1)
          _isLoseRound.value = true
         _roundEndIcon.value = R.drawable.ic_loss
@@ -170,6 +168,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
 
     fun tooEarlyResponseLoss(){
         setLoseRound()
+        _score.value = _score.value?.minus(1)
         _roundEndMessage.value = app.getString(R.string.too_early_loss_message)
     }
 
