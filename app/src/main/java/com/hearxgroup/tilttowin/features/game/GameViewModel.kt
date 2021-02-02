@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class GameViewModel(application: Application) : BaseVieModel(application) {
 
     private val _arrow: MutableLiveData<Int> = MutableLiveData()
-    var arrow: MutableLiveData<Int> = MutableLiveData()
+    val arrow: LiveData<Int>
         get() = _arrow
 
     private val _countDown: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(0) }
