@@ -149,7 +149,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
         val zAngle =  (z * 10).toInt()
         val yAngle = (y * 10).toInt()
         val requiredAngle = 50
-        val threshold = (requiredAngle * 80 / 100)
+        val threshold = (requiredAngle * 90 / 100)
         var direction = 4
 
         if (zAngle > threshold || zAngle < -threshold) {
