@@ -132,10 +132,12 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
     private fun onTimeRunOut(isTimeOut: Boolean) {
         imgDirection.visibility = View.GONE
+        tvTryAgain.visibility = View.GONE
     }
 
     private fun hideArrowAndInitRound() {
         imgDirection.visibility = View.GONE
+        tvTryAgain.visibility = View.GONE
         gameViewModel.initRound()
     }
 
@@ -191,8 +193,11 @@ class GameActivity : BaseActivity(), SensorEventListener {
     }
 
     private fun onWinGame(isWin: Boolean){
-        sensorManager?.unregisterListener(this)
         imgDirection.visibility = View.GONE
+        tvTryAgain.visibility = View.GONE
+
+        sensorManager?.unregisterListener(this)
+
         val score = "${gameViewModel.score.value}/${gameViewModel.attempts.value}"
         showSuccessAlert(this,
             getString(R.string.win_title),
@@ -203,8 +208,11 @@ class GameActivity : BaseActivity(), SensorEventListener {
     }
 
     private fun onLoseGame(isLose: Boolean) {
-        sensorManager?.unregisterListener(this)
         imgDirection.visibility = View.GONE
+        tvTryAgain.visibility = View.GONE
+
+        sensorManager?.unregisterListener(this)
+
         val score = "${gameViewModel.score.value}/${gameViewModel.attempts.value}"
         showErrorAlert(
             this,
