@@ -116,6 +116,8 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
             } else {
                 _isLoseGame.value = true
             }
+
+            roundTimer?.cancel()
         } else {
             _isTimeRunOut.value = true
             tooLateResponseLoss()
@@ -194,6 +196,8 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
             else{
                 _isLoseGame.value = true
             }
+
+            roundTimer?.cancel()
         }
         else{
             if(!isLegal){
