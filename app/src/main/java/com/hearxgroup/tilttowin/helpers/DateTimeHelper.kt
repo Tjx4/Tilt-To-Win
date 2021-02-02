@@ -4,10 +4,10 @@ import android.os.CountDownTimer
 import java.util.concurrent.TimeUnit
 
 
-fun countDownTime(from: Long, onTickCallback: (Long) -> Unit, onCompleteCallback: () -> Unit){
+fun countDownTime(from: Long, onTickCallback: (Long) -> Unit, onCompleteCallback: () -> Unit):CountDownTimer {
     val seconds  = from * 1000
 
-    object : CountDownTimer(seconds, 1000) {
+    return object : CountDownTimer(seconds, 1000) {
         override fun onTick(millisUntilFinished: Long) {
             val sec = (TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished) -
                     TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millisUntilFinished)));
@@ -19,5 +19,6 @@ fun countDownTime(from: Long, onTickCallback: (Long) -> Unit, onCompleteCallback
             onCompleteCallback.invoke()
             this.cancel()
         }
-    }.start()
+    }
+
 }

@@ -36,7 +36,7 @@ class RoundFinishedFragment : BaseDialogFragment() {
         val parentView = binding.root
 
         initViews(parentView)
-        gameActivity.gameViewModel.roundCountDown {
+        gameActivity.gameViewModel.countDownToNextRound {
             dismiss()
         }
         return parentView

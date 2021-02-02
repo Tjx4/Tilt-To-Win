@@ -1,6 +1,7 @@
 package com.hearxgroup.tilttowin.features.game
 
 import android.app.Application
+import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.hearxgroup.tilttowin.R
@@ -44,6 +45,10 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val isWinRound: MutableLiveData<Boolean>
         get() = _isWinRound
 
+    private val _isTimeRunOut: MutableLiveData<Boolean> = MutableLiveData()
+    val isTimeRunOut: MutableLiveData<Boolean>
+        get() = _isTimeRunOut
+
     private val _isLoseRound: MutableLiveData<Boolean> = MutableLiveData()
     val isLoseRound: MutableLiveData<Boolean>
         get() = _isLoseRound
@@ -72,25 +77,49 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val tiltDirection: LiveData<Int>
         get() = _tiltDirection
 
+    private var roundTimer: CountDownTimer? = null
     private var interval: Long = 2
     private var isInplay = false
     private var isLegal = false
+    private var stopTimer  = false
 
     fun startCountDown(){
         countDownTime(3, {
             _countDown.value = it.toInt()
         } , {
             _isCountDownFinished.value = true
-        })
+        }).start()
     }
 
-    fun roundCountDown(onCompleteCallback: () -> Unit = {}){
+    fun countDownToNextRound(onCompleteCallback: () -> Unit = {}){
         countDownTime(5, {
             _countDown.value = it.toInt()
         } , {
             onCompleteCallback.invoke()
             initRound()
+        }).start()
+    }
+
+    fun startRoundCountDown(onCompleteCallback: () -> Unit = {}){
+        roundTimer = countDownTime(3, {} , {
+            if(!stopTimer){
+                checkAndSetTooLateResponse()
+            }
         })
+        roundTimer?.start()
+    }
+
+    private fun checkAndSetTooLateResponse() {
+        if (_attempt.value!! > 9) {
+            if (_score.value!! > 4) {
+                _isWinGame.value = true
+            } else {
+                _isLoseGame.value = true
+            }
+        } else {
+            _isTimeRunOut.value = true
+            tooLateResponseLoss()
+        }
     }
 
     fun setArrowColor(colorIndex: Int){
@@ -114,12 +143,14 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
                     isLegal = true
                     _tiltDirection.value = direction
                     _arrow.value = TiltDirection.values()[direction].directionIcon
+                    startRoundCountDown()
                 }
             }
         }
     }
 
     fun setWinRound(){
+        roundTimer?.cancel()
         isInplay = false
         isLegal = false
         _score.value = _score.value?.plus(1)
@@ -128,13 +159,23 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     }
 
     fun setLoseRound(){
+        roundTimer?.cancel()
         isInplay = false
         isLegal = false
         _score.value = _score.value?.minus(1)
         _attempt.value = _attempt.value?.plus(1)
          _isLoseRound.value = true
         _roundEndIcon.value = R.drawable.ic_loss
-        _roundEndMessage.value = app.getString(R.string.loss_message)
+    }
+
+    fun tooEarlyResponseLoss(){
+        setLoseRound()
+        _roundEndMessage.value = app.getString(R.string.too_early_loss_message)
+    }
+
+    fun tooLateResponseLoss(){
+        setLoseRound()
+        _roundEndMessage.value = app.getString(R.string.too_late_loss_message)
     }
 
     fun setUserTiltDirection(tiltDirection: Int){
@@ -146,7 +187,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     }
 
     fun checkTiltDirectionMatch(directionIndex: Int) {
-
         if(_attempt.value!! > 9){
             if(_score.value!! > 4){
                 _isWinGame.value = true
@@ -157,7 +197,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         }
         else{
             if(!isLegal){
-                setLoseRound()
+                tooEarlyResponseLoss()
             }
             else if(directionIndex == _tiltDirection.value){
                 setWinRound()

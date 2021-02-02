@@ -60,6 +60,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
         gameViewModel.tiltDirection.observe(this, Observer {onRequiredDirectionSet(it)})
         gameViewModel.userTiltDirection.observe(this, Observer {onUserTiltDirectionSet(it)})
         gameViewModel.wrongChoice.observe(this, Observer { onWrongDirectionTilted(it) })
+        gameViewModel.isTimeRunOut.observe(this, Observer {onTimeRunOut(it)})
         gameViewModel.isWinRound.observe(this, Observer {onWinRound(it)})
         gameViewModel.isLoseRound.observe(this, Observer {onLoseRound(it)})
         gameViewModel.isWinGame.observe(this, Observer {onWinGame(it)})
@@ -127,6 +128,10 @@ class GameActivity : BaseActivity(), SensorEventListener {
             roundFinishedFragment,
             this
         )
+    }
+
+    private fun onTimeRunOut(isTimeOut: Boolean) {
+        imgDirection.visibility = View.GONE
     }
 
     private fun hideArrowAndInitRound() {
