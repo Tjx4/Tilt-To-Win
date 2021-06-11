@@ -34,7 +34,6 @@ class RoundFinishedFragment : BaseDialogFragment() {
             container,
             false
         )
-
         gameViewModel = gameActivity?.gameViewModel
         binding.lifecycleOwner = this
         binding.gameViewModel = gameViewModel

@@ -49,6 +49,7 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
+            android:visibility="invisible"
             android:id="@+id/tvCountDown"
             style="@style/XLargeDarkTextView"
             android:layout_width="wrap_content"
