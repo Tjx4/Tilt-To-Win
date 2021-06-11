@@ -55,7 +55,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
     }
 
     private fun addObservers() {
-        gameViewModel.isCountDownFinished.observe(this, Observer {onCountDownFinished(it)})
+        gameViewModel.isInitCountDownFinished.observe(this, Observer {onInitCountDownFinished(it)})
         gameViewModel.colorIndex.observe(this, Observer {onColorSet(it)})
         gameViewModel.tiltDirection.observe(this, Observer {onRequiredDirectionSet(it)})
         gameViewModel.userTiltDirection.observe(this, Observer {onUserTiltDirectionSet(it)})
@@ -88,7 +88,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
         gameViewModel.startCountDown(3)
     }
 
-    private fun onCountDownFinished(isFinished: Boolean){
+    private fun onInitCountDownFinished(isFinished: Boolean){
         tvCountDown.visibility = View.GONE
         clTopBanner.visibility = View.VISIBLE
         Toast.makeText(this, getString(R.string.game_begun), Toast.LENGTH_SHORT).show()

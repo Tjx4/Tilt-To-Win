@@ -27,9 +27,9 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val attempts: LiveData<Int>
         get() = _attempt
 
-    private val _isCountDownFinished: MutableLiveData<Boolean> = MutableLiveData()
-    val isCountDownFinished: LiveData<Boolean>
-        get() = _isCountDownFinished
+    private val _isInitCountDownFinished: MutableLiveData<Boolean> = MutableLiveData()
+    val isInitCountDownFinished: LiveData<Boolean>
+        get() = _isInitCountDownFinished
 
     private val _userTiltDirection: MutableLiveData<Int> = MutableLiveData()
     val userTiltDirection: LiveData<Int>
@@ -103,14 +103,16 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
             uiScope.launch {
                 when (time) {
                     0 -> onCompleteCallback.invoke()
-                    else -> countDownAndExecute(time - 1)
+                    else -> countDownAndExecute(time - 1, onCompleteCallback)
                 }
             }
         }
     }
 
     fun startCountDown(from: Int){
-        countDownAndExecute(from)
+        countDownAndExecute(from) {
+            _isInitCountDownFinished.value = true
+        }
     }
 
     fun countDownToNextRound(onCompleteCallback: () -> Unit = {}){
