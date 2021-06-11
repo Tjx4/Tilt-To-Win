@@ -7,7 +7,6 @@ import androidx.lifecycle.MutableLiveData
 import com.hearxgroup.tilttowin.R
 import com.hearxgroup.tilttowin.base.viewModel.BaseVieModel
 import com.hearxgroup.tilttowin.enum.TiltDirection
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -16,9 +15,9 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val arrow: LiveData<Int>
         get() = _arrow
 
-    private val _countDown: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(0) }
-    val countDown: LiveData<Int>
-        get() = _countDown
+    private val _countDownTime: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(0) }
+    val countDownTime: LiveData<Int>
+        get() = _countDownTime
 
     private val _score: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(0) }
     val score: LiveData<Int>
@@ -82,7 +81,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     private var isLegal = false
     private var stopTimer  = false
 
-    private fun countDown(from: Int, onTicCallback: (Int) -> Unit = {}, onCompleteCallback: () -> Unit = {}){
+    private fun countDownXX(from: Int, onTicCallback: (Int) -> Unit = {}, onCompleteCallback: () -> Unit = {}){
         if(from > 0){
             onTicCallback.invoke(from)
             ioScope.launch {
@@ -94,38 +93,33 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         }
         else{
             onCompleteCallback.invoke()
-            //End coroutine
-            //viewModelJob.complete()
-            //uiScope.cancel()
-            //ioScope.cancel()
+        }
+    }
+
+    fun countDownAndExecute(time: Int, onCompleteCallback: () -> Unit = {}){
+        _countDownTime.value = time
+        ioScope.launch {
+            delay(1000)
+            uiScope.launch {
+                when (time) {
+                    0 -> onCompleteCallback.invoke()
+                    else -> countDownAndExecute(time - 1)
+                }
+            }
         }
     }
 
     fun startCountDown(from: Int){
-        countDown(from, { count ->
-            _countDown.value = count
-        }, {
-            _isCountDownFinished.value = true
-        })
+        countDownAndExecute(from)
     }
 
+
     fun countDownToNextRound(onCompleteCallback: () -> Unit = {}){
-        viewModelJob = Job()
-        countDown(5, {
-            _countDown.value = it.toInt()
-        } , {
-            onCompleteCallback.invoke()
-            initRound()
-        })
+        countDownAndExecute(5, onCompleteCallback)
     }
 
     fun startRoundCountDown(onCompleteCallback: () -> Unit = {}){
-        roundTimer = countDownTime(3, {} , {
-            if(!stopTimer){
-                checkAndSetTooLateResponse()
-            }
-        })
-        roundTimer?.start()
+        countDownAndExecute(3) { checkAndSetTooLateResponse() }
     }
 
     private fun checkAndSetTooLateResponse() {

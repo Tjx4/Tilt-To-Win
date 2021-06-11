@@ -5,19 +5,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import com.hearxgroup.tilttowin.R
 import com.hearxgroup.tilttowin.base.fragments.BaseDialogFragment
 import com.hearxgroup.tilttowin.databinding.FragmentRoundFinishedBinding
 import com.hearxgroup.tilttowin.features.game.GameActivity
+import com.hearxgroup.tilttowin.features.game.GameViewModel
 
 class RoundFinishedFragment : BaseDialogFragment() {
-    lateinit var binding: FragmentRoundFinishedBinding
+    private lateinit var binding: FragmentRoundFinishedBinding
+    lateinit var gameViewModel: GameViewModel
     private lateinit var gameActivity: GameActivity
-    private lateinit var iconImg: ImageView
-    private lateinit var messageTv: TextView
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        gameActivity = context as GameActivity
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,25 +34,19 @@ class RoundFinishedFragment : BaseDialogFragment() {
             container,
             false
         )
-        binding.lifecycleOwner = this
-        binding.gameViewModel = gameActivity?.gameViewModel
-        val parentView = binding.root
 
-        initViews(parentView)
+        gameViewModel = gameActivity?.gameViewModel
+        binding.lifecycleOwner = this
+        binding.gameViewModel = gameViewModel
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         gameActivity.gameViewModel.countDownToNextRound {
             dismiss()
+            gameViewModel.initRound()
         }
-        return parentView
-    }
-
-    private fun initViews(parentView: View) {
-        iconImg = parentView.findViewById(R.id.imgIcon)
-        messageTv = parentView.findViewById(R.id.tvMessage)
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        gameActivity = context as GameActivity
     }
 
     fun onBackPressed(): Boolean {

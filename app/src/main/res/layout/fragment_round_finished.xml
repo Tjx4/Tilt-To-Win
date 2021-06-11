@@ -56,7 +56,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             tools:text="0"
-            android:text="@{``+gameViewModel.countDown}"
+            android:text="@{``+gameViewModel.countDownTime}"
             android:layout_marginBottom="@dimen/medium_margin"
             app:layout_constraintTop_toBottomOf="@+id/tvNextRoundMessage"
             app:layout_constraintBottom_toBottomOf="parent"

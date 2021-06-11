@@ -12,7 +12,6 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.hearxgroup.tilttowin.R
 import com.hearxgroup.tilttowin.base.activities.BaseActivity
 import com.hearxgroup.tilttowin.databinding.ActivityGameBinding
@@ -28,7 +27,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GameActivity : BaseActivity(), SensorEventListener {
     private lateinit var binding: ActivityGameBinding
-    private val gameViewModel: GameViewModel by viewModel()
+    val gameViewModel: GameViewModel by viewModel()
     private var sensorManager: SensorManager? = null
     private var sensor: Sensor? = null
     private var lastDirection: Int? = null
@@ -42,6 +41,11 @@ class GameActivity : BaseActivity(), SensorEventListener {
         addObservers()
         initSensor()
         showColorSelector()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     private fun initSensor() {
@@ -63,11 +67,6 @@ class GameActivity : BaseActivity(), SensorEventListener {
         gameViewModel.isLoseGame.observe(this, Observer {onLoseGame(it)})
     }
 
-    override fun onResume() {
-        super.onResume()
-        sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
-    }
-
     override fun onPause() {
         super.onPause()
         sensorManager?.unregisterListener(this)
@@ -77,7 +76,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
         val colorSelectorFragment = ColorSelectorFragment.newInstance()
         colorSelectorFragment?.isCancelable = false
         showDialogFragment(
-            "Color selector",
+            getString(R.string.color_selector),
             R.layout.fragment_color_selector,
             colorSelectorFragment,
             this
