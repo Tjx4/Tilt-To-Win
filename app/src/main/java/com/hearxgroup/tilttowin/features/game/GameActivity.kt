@@ -24,34 +24,30 @@ import com.hearxgroup.tilttowin.helpers.showDialogFragment
 import com.hearxgroup.tilttowin.helpers.showErrorAlert
 import com.hearxgroup.tilttowin.helpers.showSuccessAlert
 import kotlinx.android.synthetic.main.activity_game.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GameActivity : BaseActivity(), SensorEventListener {
     private lateinit var binding: ActivityGameBinding
-    lateinit var gameViewModel: GameViewModel
+    private val gameViewModel: GameViewModel by viewModel()
     private var sensorManager: SensorManager? = null
     private var sensor: Sensor? = null
-    var lastDirection: Int? = null
+    private var lastDirection: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        var application = requireNotNull(this).application
-        var viewModelFactory = GameViewModelFactory(application)
-
-        gameViewModel = ViewModelProviders.of(this, viewModelFactory).get(GameViewModel::class.java)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_game)
         binding.gameViewModel = gameViewModel
         binding.lifecycleOwner = this
-
-        addObservers()
-
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        addObservers()
+        initSensor()
+        showColorSelector()
+    }
 
+    private fun initSensor() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
         sensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
         sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
-
-        showColorSelector()
     }
 
     private fun addObservers() {
@@ -90,7 +86,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
     private fun onColorSet(cIndex: Int){
         tvCountDown.visibility = View.VISIBLE
-        gameViewModel.startCountDown()
+        gameViewModel.startCountDown(3)
     }
 
     private fun onCountDownFinished(isFinished: Boolean){

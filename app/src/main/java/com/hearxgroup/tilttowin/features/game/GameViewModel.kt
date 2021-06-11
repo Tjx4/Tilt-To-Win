@@ -7,12 +7,11 @@ import androidx.lifecycle.MutableLiveData
 import com.hearxgroup.tilttowin.R
 import com.hearxgroup.tilttowin.base.viewModel.BaseVieModel
 import com.hearxgroup.tilttowin.enum.TiltDirection
-import com.hearxgroup.tilttowin.helpers.countDownTime
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class GameViewModel(application: Application) : BaseVieModel(application) {
-
     private val _arrow: MutableLiveData<Int> = MutableLiveData()
     val arrow: LiveData<Int>
         get() = _arrow
@@ -83,21 +82,41 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     private var isLegal = false
     private var stopTimer  = false
 
-    fun startCountDown(){
-        countDownTime(3, {
-            _countDown.value = it.toInt()
-        } , {
+    private fun countDown(from: Int, onTicCallback: (Int) -> Unit = {}, onCompleteCallback: () -> Unit = {}){
+        if(from > 0){
+            onTicCallback.invoke(from)
+            ioScope.launch {
+                delay(1000)
+                uiScope.launch {
+                    startCountDown(from - 1)
+                }
+            }
+        }
+        else{
+            onCompleteCallback.invoke()
+            //End coroutine
+            //viewModelJob.complete()
+            //uiScope.cancel()
+            //ioScope.cancel()
+        }
+    }
+
+    fun startCountDown(from: Int){
+        countDown(from, { count ->
+            _countDown.value = count
+        }, {
             _isCountDownFinished.value = true
-        }).start()
+        })
     }
 
     fun countDownToNextRound(onCompleteCallback: () -> Unit = {}){
-        countDownTime(5, {
+        viewModelJob = Job()
+        countDown(5, {
             _countDown.value = it.toInt()
         } , {
             onCompleteCallback.invoke()
             initRound()
-        }).start()
+        })
     }
 
     fun startRoundCountDown(onCompleteCallback: () -> Unit = {}){
