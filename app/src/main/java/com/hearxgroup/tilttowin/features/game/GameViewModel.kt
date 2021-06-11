@@ -79,22 +79,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     private var maxAttempts: Int = 10
     private var isInplay = false
     private var isLegal = false
-    private var stopTimer  = false
-
-    private fun countDownXX(from: Int, onTicCallback: (Int) -> Unit = {}, onCompleteCallback: () -> Unit = {}){
-        if(from > 0){
-            onTicCallback.invoke(from)
-            ioScope.launch {
-                delay(1000)
-                uiScope.launch {
-                    startCountDown(from - 1)
-                }
-            }
-        }
-        else{
-            onCompleteCallback.invoke()
-        }
-    }
 
     fun countDownAndExecute(time: Int, onCompleteCallback: () -> Unit = {}){
         _countDownTime.value = time
@@ -120,7 +104,9 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     }
 
     fun startRoundCountDown(onCompleteCallback: () -> Unit = {}){
-        countDownAndExecute(3) { checkAndSetTooLateResponse() }
+        countDownAndExecute(3) {
+            checkAndSetTooLateResponse()
+        }
     }
 
     private fun checkAndSetTooLateResponse() {
