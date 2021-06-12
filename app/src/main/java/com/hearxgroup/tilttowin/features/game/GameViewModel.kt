@@ -183,7 +183,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     }
 
     fun countDownToNextRound(onCompleteCallback: () -> Unit = {}){
-        countDownAndExecute(5, onCompleteCallback)
+        countDownAndExecute(3, onCompleteCallback)
     }
 
 
