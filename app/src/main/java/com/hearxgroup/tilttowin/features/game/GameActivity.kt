@@ -48,6 +48,11 @@ class GameActivity : BaseActivity(), SensorEventListener {
         sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
+    override fun onPause() {
+        super.onPause()
+        sensorManager?.unregisterListener(this)
+    }
+
     private fun initSensor() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
         sensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
@@ -64,11 +69,6 @@ class GameActivity : BaseActivity(), SensorEventListener {
         gameViewModel.isRoundEnd.observe(this, Observer {onRoundEnd(it)})
         gameViewModel.isWinRound.observe(this, Observer {onWinRound(it)})
         gameViewModel.isLoseRound.observe(this, Observer {onLoseRound(it)})
-    }
-
-    override fun onPause() {
-        super.onPause()
-        sensorManager?.unregisterListener(this)
     }
 
     private fun showColorSelector() {

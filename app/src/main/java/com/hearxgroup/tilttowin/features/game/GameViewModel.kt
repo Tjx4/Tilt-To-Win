@@ -137,7 +137,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         roundJob?.cancel()
         roundIoScope?.cancel()
         roundUiScope?.cancel()
-
         isInplay = false
         isLegal = false
         _isRoundEnd.value = true
@@ -175,7 +174,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
             }
             directionIndex == _tiltDirection.value -> {
                 _score.value = _score.value?.plus(1)
-                checkAndInitRound { setWinRound() }
+                checkAndInitRound { winRound() }
             }
             else -> _wrongChoice.value = true
         }
@@ -184,33 +183,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     fun countDownToNextRound(onCompleteCallback: () -> Unit = {}){
         countDownAndExecute(3, onCompleteCallback)
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     private fun showGameWinOrLose(){
         endRound()
@@ -228,14 +200,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         }
     }
 
-
-
-
-
-
-
-
-    fun setWinRound(){
+    fun winRound(){
         endRound()
         _currentRound.value = _currentRound.value?.plus(1)
         _isWinRound.value = true
@@ -243,7 +208,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         _roundEndMessage.value = app.getString(R.string.win_message)
     }
 
-    fun setLoseRound(){
+    fun loseRound(){
         endRound()
         _currentRound.value = _currentRound.value?.plus(1)
          _isLoseRound.value = true
@@ -251,12 +216,12 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     }
 
     private fun tooEarlyResponseLoss(){
-        setLoseRound()
+        loseRound()
         _roundEndMessage.value = app.getString(R.string.too_early_loss_message)
     }
 
     private fun tooLateResponseLoss(){
-        setLoseRound()
+        loseRound()
         _roundEndMessage.value = app.getString(R.string.too_late_loss_message)
     }
 
