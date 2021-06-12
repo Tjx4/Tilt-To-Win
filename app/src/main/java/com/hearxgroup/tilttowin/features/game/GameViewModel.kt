@@ -73,7 +73,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val tiltDirection: LiveData<Int>
         get() = _tiltDirection
 
-    private var maxAttempts: Int = 2
+    private var maxAttempts: Int = 10
     private var isInplay = false
     private var isLegal = false
 
@@ -170,8 +170,14 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         if(!isInplay) return
 
         when{
-            !isLegal -> checkAndInitRound { tooEarlyResponseLoss() }
-            directionIndex == _tiltDirection.value -> checkAndInitRound { setWinRound()}
+            !isLegal -> {
+                _score.value = _score.value?.minus(1)
+                checkAndInitRound { tooEarlyResponseLoss() }
+            }
+            directionIndex == _tiltDirection.value -> {
+                _score.value = _score.value?.plus(1)
+                checkAndInitRound { setWinRound() }
+            }
             else -> _wrongChoice.value = true
         }
     }
@@ -232,7 +238,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
 
     fun setWinRound(){
         endRound()
-        _score.value = _score.value?.plus(1)
         _currentRound.value = _currentRound.value?.plus(1)
         _isWinRound.value = true
         _roundEndIcon.value = R.drawable.ic_win
@@ -248,7 +253,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
 
     private fun tooEarlyResponseLoss(){
         setLoseRound()
-        _score.value = _score.value?.minus(1)
         _roundEndMessage.value = app.getString(R.string.too_early_loss_message)
     }
 
