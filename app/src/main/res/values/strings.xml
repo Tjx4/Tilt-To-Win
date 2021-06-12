@@ -3,14 +3,13 @@
     <string name="game_begun">Game has Begun!</string>
     <string name="win_message">Congratulations you won this round</string>
     <string name="too_early_loss_message">You reacted too soon, one point will be deducted</string>
-    <string name="too_late_loss_message">Sorry you are too late</string>
+    <string name="too_late_loss_message">Sorry time is up, you lose this round</string>
     <string name="close_app">Close app</string>
     <string name="lose_title">You lose</string>
     <string name="win_title">You won</string>
     <string name="game_win_message">Congratulations you won the game, your score is  %s</string>
     <string name="game_lose_message"> "Sorry you scored less than the required amount, your score is  %s</string>
     <string name="round_complete">Round Complete</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="wrong_direction_please_try_again">Wrong direction, please try again</string>
     <string name="color_selector">Color selector</string>

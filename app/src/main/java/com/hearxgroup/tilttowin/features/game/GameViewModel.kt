@@ -108,29 +108,32 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     fun setRequiredDirectionAndInterval(){
         val direction = (0..3).random()
         var interval = ((2..5).random() * 1000).toLong()
-
         ioScope.launch {
             delay(interval)
             uiScope.launch {
-                startRound(direction)
+                if(isInplay){
+                    startRound(direction)
+                }
             }
         }
     }
 
     private fun startRound(direction: Int) {
-        roundJob = Job()
-        roundIoScope = CoroutineScope(Dispatchers.IO + roundJob)
-        roundUiScope = CoroutineScope(Dispatchers.Main + roundJob)
-
         isLegal = true
         setRequiredTiltDirection(direction)
+
+        roundJob = Job()
+        roundJob?.let {
+            roundIoScope = CoroutineScope(Dispatchers.IO + it)
+            roundUiScope = CoroutineScope(Dispatchers.Main + it)
+        }
         startRoundCountDown(3)
     }
 
     private fun endRound() {
-        roundJob.cancel()
-        roundIoScope.cancel()
-        roundUiScope.cancel()
+        roundJob?.cancel()
+        roundIoScope?.cancel()
+        roundUiScope?.cancel()
 
         isInplay = false
         isLegal = false
@@ -142,14 +145,14 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         _arrow.value = TiltDirection.values()[direction].icon
     }
 
-    lateinit var roundJob:Job
-    lateinit var roundIoScope:CoroutineScope
-    lateinit var roundUiScope:CoroutineScope
+    private var roundJob:Job? = null
+    private var roundIoScope:CoroutineScope? = null
+    private var roundUiScope:CoroutineScope? = null
 
     fun startRoundCountDown(from: Int){
-        roundIoScope.launch {
+        roundIoScope?.launch {
             delay(1000)
-            roundUiScope.launch {
+            roundUiScope?.launch {
                 when (from) {
                     0 ->  tooLateResponseLoss()
                     else -> startRoundCountDown(from - 1)
