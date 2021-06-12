@@ -40,8 +40,8 @@
                 style="@style/MediumDarkTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Score: 0"
-                android:text="@{`Score: `+ gameViewModel.score +` of `+ gameViewModel.attempts }"
+                tools:text="Score: 0/0"
+                android:text="@{`Score: `+ gameViewModel.score +` / `+ gameViewModel.round }"
                 android:padding="@dimen/small_margin"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintRight_toRightOf="parent"/>

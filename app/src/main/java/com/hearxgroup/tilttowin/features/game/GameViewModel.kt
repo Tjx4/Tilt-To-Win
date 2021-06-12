@@ -1,14 +1,12 @@
 package com.hearxgroup.tilttowin.features.game
 
 import android.app.Application
-import android.os.CountDownTimer
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.hearxgroup.tilttowin.R
 import com.hearxgroup.tilttowin.base.viewModel.BaseVieModel
 import com.hearxgroup.tilttowin.enum.TiltDirection
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class GameViewModel(application: Application) : BaseVieModel(application) {
     private val _arrow: MutableLiveData<Int> = MutableLiveData()
@@ -23,9 +21,9 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val score: LiveData<Int>
         get() = _score
 
-    private val _attempt: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(0) }
-    val attempts: LiveData<Int>
-        get() = _attempt
+    private val _currentRound: MutableLiveData<Int> = MutableLiveData<Int>().apply { setValue(1) }
+    val round: LiveData<Int>
+        get() = _currentRound
 
     private val _isInitCountDownFinished: MutableLiveData<Boolean> = MutableLiveData()
     val isInitCountDownFinished: LiveData<Boolean>
@@ -43,9 +41,9 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val isWinRound: MutableLiveData<Boolean>
         get() = _isWinRound
 
-    private val _isTimeRunOut: MutableLiveData<Boolean> = MutableLiveData()
-    val isTimeRunOut: MutableLiveData<Boolean>
-        get() = _isTimeRunOut
+    private val _isRoundEnd: MutableLiveData<Boolean> = MutableLiveData()
+    val isRoundEnd: MutableLiveData<Boolean>
+        get() = _isRoundEnd
 
     private val _isLoseRound: MutableLiveData<Boolean> = MutableLiveData()
     val isLoseRound: MutableLiveData<Boolean>
@@ -75,10 +73,13 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val tiltDirection: LiveData<Int>
         get() = _tiltDirection
 
-    private var roundTimer: CountDownTimer? = null
     private var maxAttempts: Int = 10
     private var isInplay = false
     private var isLegal = false
+
+    fun setArrowColor(colorIndex: Int){
+        _colorIndex.value = colorIndex
+    }
 
     fun countDownAndExecute(time: Int, onCompleteCallback: () -> Unit = {}){
         _countDownTime.value = time
@@ -93,43 +94,10 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         }
     }
 
-    fun startCountDown(from: Int){
+    fun startInitCountDown(from: Int){
         countDownAndExecute(from) {
             _isInitCountDownFinished.value = true
         }
-    }
-
-    fun countDownToNextRound(onCompleteCallback: () -> Unit = {}){
-        countDownAndExecute(5, onCompleteCallback)
-    }
-
-    fun startRoundCountDown(){
-        countDownAndExecute(3) {
-            checkAndSetTooLateResponse()
-        }
-    }
-
-    private fun checkAndSetTooLateResponse() {
-        if (_attempt.value!! < maxAttempts) {
-            _isTimeRunOut.value = true
-            tooLateResponseLoss()
-        } else {
-            showGameWinOrLose()
-        }
-    }
-
-    private fun showGameWinOrLose() {
-        if (_score.value!! > 4) {
-            _isWinGame.value = true
-        } else {
-            _isLoseGame.value = true
-        }
-
-        roundTimer?.cancel()
-    }
-
-    fun setArrowColor(colorIndex: Int){
-        _colorIndex.value = colorIndex
     }
 
     fun initRound(){
@@ -143,71 +111,140 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
 
         ioScope.launch {
             delay(interval)
-
             uiScope.launch {
-                if(isInplay){
-                    isLegal = true
-                    _tiltDirection.value = direction
-                    _arrow.value = TiltDirection.values()[direction].directionIcon
-                    startRoundCountDown()
+                startRound(direction)
+            }
+        }
+    }
+
+    private fun startRound(direction: Int) {
+        roundJob = Job()
+        roundIoScope = CoroutineScope(Dispatchers.IO + roundJob)
+        roundUiScope = CoroutineScope(Dispatchers.Main + roundJob)
+
+        isLegal = true
+        setRequiredTiltDirection(direction)
+        startRoundCountDown(3)
+    }
+
+    private fun endRound() {
+        roundJob.cancel()
+        roundIoScope.cancel()
+        roundUiScope.cancel()
+
+        isInplay = false
+        isLegal = false
+        _isRoundEnd.value = true
+    }
+
+    private fun setRequiredTiltDirection(direction: Int) {
+        _tiltDirection.value = direction
+        _arrow.value = TiltDirection.values()[direction].icon
+    }
+
+    lateinit var roundJob:Job
+    lateinit var roundIoScope:CoroutineScope
+    lateinit var roundUiScope:CoroutineScope
+
+    fun startRoundCountDown(from: Int){
+        roundIoScope.launch {
+            delay(1000)
+            roundUiScope.launch {
+                when (from) {
+                    0 ->  tooLateResponseLoss()
+                    else -> startRoundCountDown(from - 1)
                 }
             }
         }
     }
 
+    fun setUserTiltDirection(tiltDirection: Int){
+        _userTiltDirection.value = tiltDirection
+        checkTiltDirectionMatch(tiltDirection)
+    }
+
+    fun checkTiltDirectionMatch(directionIndex: Int) {
+        if(!isInplay) return
+
+        when{
+            !isLegal -> tooEarlyResponseLoss()
+            directionIndex == _tiltDirection.value -> setWinRound()
+            else -> _wrongChoice.value = true
+        }
+    }
+
+    fun countDownToNextRound(onCompleteCallback: () -> Unit = {}){
+        countDownAndExecute(5, onCompleteCallback)
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private fun showGameWinOrLose(){
+        if (_score.value!! > 4) {
+            _isWinGame.value = true
+        } else {
+            _isLoseGame.value = true
+        }
+    }
+
+    fun checkAndInitRound(){
+        when {
+            round.value == maxAttempts -> {
+                showGameWinOrLose()
+            }
+            else -> {}
+        }
+    }
+
+
     fun setWinRound(){
-        roundTimer?.cancel()
-        isInplay = false
-        isLegal = false
+        endRound()
         _score.value = _score.value?.plus(1)
-        _attempt.value = _attempt.value?.plus(1)
+        _currentRound.value = _currentRound.value?.plus(1)
         _isWinRound.value = true
     }
 
     fun setLoseRound(){
-        roundTimer?.cancel()
-        isInplay = false
-        isLegal = false
-        _attempt.value = _attempt.value?.plus(1)
+        endRound()
+        _currentRound.value = _currentRound.value?.plus(1)
          _isLoseRound.value = true
         _roundEndIcon.value = R.drawable.ic_loss
     }
 
-    fun tooEarlyResponseLoss(){
+    private fun tooEarlyResponseLoss(){
         setLoseRound()
         _score.value = _score.value?.minus(1)
         _roundEndMessage.value = app.getString(R.string.too_early_loss_message)
     }
 
-    fun tooLateResponseLoss(){
+    private fun tooLateResponseLoss(){
         setLoseRound()
         _roundEndMessage.value = app.getString(R.string.too_late_loss_message)
-    }
-
-    fun setUserTiltDirection(tiltDirection: Int){
-        if(!isInplay) {
-            return
-        }
-
-        _userTiltDirection.value = tiltDirection
-    }
-
-    fun checkTiltDirectionMatch(directionIndex: Int) {
-        if(_attempt.value!! < maxAttempts){
-            if(!isLegal){
-                tooEarlyResponseLoss()
-            }
-            else if(directionIndex == _tiltDirection.value){
-                setWinRound()
-            }
-            else{
-                _wrongChoice.value = true
-            }
-        }
-        else {
-            showGameWinOrLose()
-        }
-
     }
 
 }

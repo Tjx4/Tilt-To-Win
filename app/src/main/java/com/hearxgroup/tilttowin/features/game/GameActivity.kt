@@ -58,13 +58,18 @@ class GameActivity : BaseActivity(), SensorEventListener {
         gameViewModel.isInitCountDownFinished.observe(this, Observer {onInitCountDownFinished(it)})
         gameViewModel.colorIndex.observe(this, Observer {onColorSet(it)})
         gameViewModel.tiltDirection.observe(this, Observer {onRequiredDirectionSet(it)})
-        gameViewModel.userTiltDirection.observe(this, Observer {onUserTiltDirectionSet(it)})
-        gameViewModel.wrongChoice.observe(this, Observer { onWrongDirectionTilted(it) })
-        gameViewModel.isTimeRunOut.observe(this, Observer {onTimeRunOut(it)})
-        gameViewModel.isWinRound.observe(this, Observer {onWinRound(it)})
-        gameViewModel.isLoseRound.observe(this, Observer {onLoseRound(it)})
+//gameViewModel.userTiltDirection.observe(this, Observer {onUserTiltDirectionSet(it)})
+        gameViewModel.wrongChoice.observe(this, Observer {onWrongDirectionTilted(it)})
+
         gameViewModel.isWinGame.observe(this, Observer {onWinGame(it)})
         gameViewModel.isLoseGame.observe(this, Observer {onLoseGame(it)})
+
+
+
+
+        gameViewModel.isRoundEnd.observe(this, Observer {onRoundEnd(it)})
+        gameViewModel.isWinRound.observe(this, Observer {onWinRound(it)})
+        gameViewModel.isLoseRound.observe(this, Observer {onLoseRound(it)})
     }
 
     override fun onPause() {
@@ -85,7 +90,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
     private fun onColorSet(cIndex: Int){
         tvCountDown.visibility = View.VISIBLE
-        gameViewModel.startCountDown(3)
+        gameViewModel.startInitCountDown(3)
     }
 
     private fun onInitCountDownFinished(isFinished: Boolean){
@@ -100,19 +105,19 @@ class GameActivity : BaseActivity(), SensorEventListener {
         imgDirection.setColorFilter(ContextCompat.getColor(this, ArrowColors.values()[gameViewModel.colorIndex.value!!].colorRes))
     }
 
-    private fun onUserTiltDirectionSet(directionIndex: Int) {
-        gameViewModel.checkTiltDirectionMatch(directionIndex)
-    }
-
     private fun onWrongDirectionTilted(isWrongDirection: Boolean) {
         imgDirection.blinkView(0.6f, 0.3f, 150, 2, Animation.ABSOLUTE, 0, {
             tvTryAgain.visibility = View.VISIBLE
         })
     }
 
-    private fun onWinRound(isWin: Boolean){
-        hideArrowAndInitRound()
+    private fun onRoundEnd(isEnd: Boolean) {
+        imgDirection.visibility = View.GONE
+        tvTryAgain.visibility = View.GONE
+    }
 
+    private fun onWinRound(isWin: Boolean){
+        gameViewModel.initRound()
     }
 
     private fun onLoseRound(isLose: Boolean) {
@@ -123,17 +128,6 @@ class GameActivity : BaseActivity(), SensorEventListener {
             roundFinishedFragment,
             this
         )
-    }
-
-    private fun onTimeRunOut(isTimeOut: Boolean) {
-        imgDirection.visibility = View.GONE
-        tvTryAgain.visibility = View.GONE
-    }
-
-    private fun hideArrowAndInitRound() {
-        imgDirection.visibility = View.GONE
-        tvTryAgain.visibility = View.GONE
-        gameViewModel.initRound()
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -193,7 +187,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
         sensorManager?.unregisterListener(this)
 
-        val score = "${gameViewModel.score.value}/${gameViewModel.attempts.value}"
+        val score = "${gameViewModel.score.value}/${gameViewModel.round.value}"
         showSuccessAlert(this,
             getString(R.string.win_title),
             getString(R.string.game_win_message, score),
@@ -208,7 +202,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
         sensorManager?.unregisterListener(this)
 
-        val score = "${gameViewModel.score.value}/${gameViewModel.attempts.value}"
+        val score = "${gameViewModel.score.value}/${gameViewModel.round.value}"
         showErrorAlert(
             this,
             getString(R.string.lose_title),

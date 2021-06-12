@@ -14,7 +14,6 @@ import com.hearxgroup.tilttowin.features.game.GameViewModel
 
 class RoundFinishedFragment : BaseDialogFragment() {
     private lateinit var binding: FragmentRoundFinishedBinding
-    lateinit var gameViewModel: GameViewModel
     private lateinit var gameActivity: GameActivity
 
     override fun onAttach(context: Context) {
@@ -34,22 +33,19 @@ class RoundFinishedFragment : BaseDialogFragment() {
             container,
             false
         )
-        gameViewModel = gameActivity?.gameViewModel
         binding.lifecycleOwner = this
-        binding.gameViewModel = gameViewModel
+        binding.gameViewModel = gameActivity?.gameViewModel
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        gameActivity.gameViewModel.countDownToNextRound {
-            dismiss()
-            gameViewModel.initRound()
+        gameActivity?.gameViewModel.let {
+            it.countDownToNextRound {
+                dismiss()
+                it.initRound()
+            }
         }
-    }
-
-    fun onBackPressed(): Boolean {
-        return  false
     }
 
     companion object {
