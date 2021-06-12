@@ -124,7 +124,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     private fun startRound(direction: Int) {
         isLegal = true
         setRequiredTiltDirection(direction)
-
         roundJob = Job()
         roundJob?.let {
             roundIoScope = CoroutineScope(Dispatchers.IO + it)
