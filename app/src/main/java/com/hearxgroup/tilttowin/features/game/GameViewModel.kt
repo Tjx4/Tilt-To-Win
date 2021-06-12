@@ -103,7 +103,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         countDownAndExecute(5, onCompleteCallback)
     }
 
-    fun startRoundCountDown(onCompleteCallback: () -> Unit = {}){
+    fun startRoundCountDown(){
         countDownAndExecute(3) {
             checkAndSetTooLateResponse()
         }
