@@ -73,6 +73,9 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val tiltDirection: LiveData<Int>
         get() = _tiltDirection
 
+    private var roundJob:Job? = null
+    private var roundIoScope:CoroutineScope? = null
+    private var roundUiScope:CoroutineScope? = null
     private var maxAttempts: Int = 10
     private var isInplay = false
     private var isLegal = false
@@ -144,10 +147,6 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         _tiltDirection.value = direction
         _arrow.value = TiltDirection.values()[direction].icon
     }
-
-    private var roundJob:Job? = null
-    private var roundIoScope:CoroutineScope? = null
-    private var roundUiScope:CoroutineScope? = null
 
     fun startRoundCountDown(from: Int){
         roundIoScope?.launch {
