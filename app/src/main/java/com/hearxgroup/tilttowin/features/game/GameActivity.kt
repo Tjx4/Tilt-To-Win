@@ -58,15 +58,9 @@ class GameActivity : BaseActivity(), SensorEventListener {
         gameViewModel.isInitCountDownFinished.observe(this, Observer {onInitCountDownFinished(it)})
         gameViewModel.colorIndex.observe(this, Observer {onColorSet(it)})
         gameViewModel.tiltDirection.observe(this, Observer {onRequiredDirectionSet(it)})
-//gameViewModel.userTiltDirection.observe(this, Observer {onUserTiltDirectionSet(it)})
         gameViewModel.wrongChoice.observe(this, Observer {onWrongDirectionTilted(it)})
-
         gameViewModel.isWinGame.observe(this, Observer {onWinGame(it)})
         gameViewModel.isLoseGame.observe(this, Observer {onLoseGame(it)})
-
-
-
-
         gameViewModel.isRoundEnd.observe(this, Observer {onRoundEnd(it)})
         gameViewModel.isWinRound.observe(this, Observer {onWinRound(it)})
         gameViewModel.isLoseRound.observe(this, Observer {onLoseRound(it)})
@@ -117,7 +111,13 @@ class GameActivity : BaseActivity(), SensorEventListener {
     }
 
     private fun onWinRound(isWin: Boolean){
-        gameViewModel.initRound()
+        val roundFinishedFragment = RoundFinishedFragment.newInstance()
+        showDialogFragment(
+            getString(R.string.round_complete),
+            null,
+            roundFinishedFragment,
+            this
+        )
     }
 
     private fun onLoseRound(isLose: Boolean) {
@@ -185,32 +185,39 @@ class GameActivity : BaseActivity(), SensorEventListener {
         imgDirection.visibility = View.GONE
         tvTryAgain.visibility = View.GONE
 
-        sensorManager?.unregisterListener(this)
-
-        val score = "${gameViewModel.score.value}/${gameViewModel.round.value}"
+        val score = "${gameViewModel.score.value} out of ${gameViewModel.round.value}"
         showSuccessAlert(this,
             getString(R.string.win_title),
             getString(R.string.game_win_message, score),
-            getString(R.string.close_app)) {
-            finish()
-        }
+            getString(R.string.play_again),
+            getString(R.string.close_app),
+            {
+                gameViewModel.resetGame()
+            },
+            {
+                finish()
+            }
+        )
     }
 
     private fun onLoseGame(isLose: Boolean) {
         imgDirection.visibility = View.GONE
         tvTryAgain.visibility = View.GONE
 
-        sensorManager?.unregisterListener(this)
-
-        val score = "${gameViewModel.score.value}/${gameViewModel.round.value}"
+        val score = "${gameViewModel.score.value} out of ${gameViewModel.round.value}"
         showErrorAlert(
             this,
             getString(R.string.lose_title),
             getString(R.string.game_lose_message, score),
-            getString(R.string.close_app)
-        ) {
-            finish()
-        }
+            getString(R.string.play_again),
+            getString(R.string.close_app),
+            {
+                gameViewModel.resetGame()
+            },
+            {
+                finish()
+            }
+        )
     }
 
 }

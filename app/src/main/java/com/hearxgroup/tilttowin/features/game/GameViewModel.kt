@@ -73,7 +73,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     val tiltDirection: LiveData<Int>
         get() = _tiltDirection
 
-    private var maxAttempts: Int = 10
+    private var maxAttempts: Int = 2
     private var isInplay = false
     private var isLegal = false
 
@@ -154,7 +154,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
             delay(1000)
             roundUiScope?.launch {
                 when (from) {
-                    0 ->  tooLateResponseLoss()
+                    0 ->  checkAndInitRound { tooLateResponseLoss() }
                     else -> startRoundCountDown(from - 1)
                 }
             }
@@ -170,8 +170,8 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         if(!isInplay) return
 
         when{
-            !isLegal -> tooEarlyResponseLoss()
-            directionIndex == _tiltDirection.value -> setWinRound()
+            !isLegal -> checkAndInitRound { tooEarlyResponseLoss() }
+            directionIndex == _tiltDirection.value -> checkAndInitRound { setWinRound()}
             else -> _wrongChoice.value = true
         }
     }
@@ -208,6 +208,7 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
 
 
     private fun showGameWinOrLose(){
+        endRound()
         if (_score.value!! > 4) {
             _isWinGame.value = true
         } else {
@@ -215,14 +216,18 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         }
     }
 
-    fun checkAndInitRound(){
+    fun checkAndInitRound(onProceedCallback: () -> Unit){
         when {
-            round.value == maxAttempts -> {
-                showGameWinOrLose()
-            }
-            else -> {}
+            round.value == maxAttempts -> showGameWinOrLose()
+            else -> onProceedCallback.invoke()
         }
     }
+
+
+
+
+
+
 
 
     fun setWinRound(){
@@ -230,6 +235,8 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
         _score.value = _score.value?.plus(1)
         _currentRound.value = _currentRound.value?.plus(1)
         _isWinRound.value = true
+        _roundEndIcon.value = R.drawable.ic_win
+        _roundEndMessage.value = app.getString(R.string.win_message)
     }
 
     fun setLoseRound(){
@@ -248,6 +255,12 @@ class GameViewModel(application: Application) : BaseVieModel(application) {
     private fun tooLateResponseLoss(){
         setLoseRound()
         _roundEndMessage.value = app.getString(R.string.too_late_loss_message)
+    }
+
+    fun resetGame(){
+        _score.value = 0
+        _currentRound.value = 1
+        initRound()
     }
 
 }
