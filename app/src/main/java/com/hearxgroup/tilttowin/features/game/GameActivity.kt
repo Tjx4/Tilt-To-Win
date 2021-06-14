@@ -43,7 +43,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         addObservers()
         initSensor()
-        showColorSelector()
+        //showColorSelector()
     }
 
     override fun onResume() {
@@ -54,12 +54,6 @@ class GameActivity : BaseActivity(), SensorEventListener {
     override fun onPause() {
         super.onPause()
         sensorManager?.unregisterListener(this)
-    }
-
-    private fun initSensor() {
-        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
-        sensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     private fun addObservers() {
@@ -133,19 +127,24 @@ class GameActivity : BaseActivity(), SensorEventListener {
         )
     }
 
+    private fun initSensor() {
+        sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
+        sensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        sensorManager?.registerListener(this, sensor, 1000000)
+    }
+
     override fun onSensorChanged(event: SensorEvent?) {
         val x: Float = event?.values?.get(0) ?: 0.0f
         val y: Float = event?.values?.get(1) ?: 0.0f
         val z: Float = event?.values?.get(2) ?: 0.0f
 
-        val zAngle =  (z * 10).toInt()
+        val zAngle = (z * 10).toInt()
         val yAngle = (y * 10).toInt()
         val requiredAngle = 50
         val threshold = (requiredAngle * 90 / 100)
         var direction = 4
 
         if (zAngle > threshold || zAngle < -threshold) {
-
             val forward = zAngle < -requiredAngle
             val back = zAngle > requiredAngle
 
@@ -170,11 +169,28 @@ class GameActivity : BaseActivity(), SensorEventListener {
                     direction = 1
                 }
             }
+
         }
 
-        if(lastDirection != null && direction != lastDirection && direction < 4) {
-            gameViewModel.setUserTiltDirection(direction)
-            tvTryAgain.visibility = View.GONE
+
+    val isZ = z > 5 || z < -5
+    val isY = y > 5 || y < -5
+    val isAllowed = isZ || isY
+
+tvisZ.text = "IsZ: $isZ"
+tvisY.text = "IsY: $isY"
+tvX.text = "X: $x / zAngle: $zAngle"
+tvY.text = "Y: $y / yAngle: $yAngle"
+tvZ.text = "Z: $z"
+
+
+        if(isAllowed) {
+            if(lastDirection != null && direction != lastDirection && direction < 4) {
+                gameViewModel.setUserTiltDirection(direction)
+                tvTryAgain.visibility = View.GONE
+
+tvDir.text = "${TiltDirection.values()[direction].directionName}"
+            }
         }
 
         lastDirection = direction

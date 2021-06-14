@@ -17,7 +17,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/clTopBanner"
-            android:visibility="gone"
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent"
@@ -73,7 +73,7 @@
             app:layout_constraintRight_toRightOf="parent"/>
 
         <TextView
-            android:visibility="gone"
+            android:visibility="invisible"
             android:id="@+id/tvTryAgain"
             style="@style/MediumDarkTextView"
             android:layout_width="wrap_content"
@@ -83,6 +83,91 @@
             app:layout_constraintTop_toBottomOf="@+id/imgDirection"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"/>
+
+
+
+
+
+
+
+
+
+
+
+        <TextView
+            android:id="@+id/tvisZ"
+            style="@style/MediumDarkTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="IsZ: false"
+            android:layout_margin="@dimen/medium_margin"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvisY"
+            style="@style/MediumDarkTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="IsY: false"
+            android:textColor="@color/redArrow"
+            android:layout_margin="@dimen/medium_margin"
+            app:layout_constraintTop_toBottomOf="@+id/tvisZ"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvX"
+            style="@style/MediumDarkTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="0"
+            android:layout_margin="@dimen/medium_margin"
+            app:layout_constraintBottom_toTopOf="@+id/tvY"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvY"
+            style="@style/MediumDarkTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="0"
+            android:textColor="@color/redArrow"
+            android:layout_margin="@dimen/medium_margin"
+            app:layout_constraintBottom_toTopOf="@+id/tvZ"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvZ"
+            style="@style/MediumDarkTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="0"
+            android:textColor="@color/greenArrow"
+            android:layout_margin="@dimen/medium_margin"
+            app:layout_constraintBottom_toTopOf="@+id/tvSensor"
+            app:layout_constraintLeft_toLeftOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvSensor"
+            style="@style/MediumDarkTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="0"
+            android:textColor="@color/redArrow"
+            android:layout_margin="@dimen/medium_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <TextView
+            android:id="@+id/tvDir"
+            style="@style/XLargeDarkTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:text="0"
+            android:textColor="@color/greenArrow"
+            android:layout_margin="@dimen/medium_margin"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
