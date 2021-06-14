@@ -16,6 +16,7 @@ import com.hearxgroup.tilttowin.R
 import com.hearxgroup.tilttowin.base.activities.BaseActivity
 import com.hearxgroup.tilttowin.databinding.ActivityGameBinding
 import com.hearxgroup.tilttowin.enum.ArrowColors
+import com.hearxgroup.tilttowin.enum.TiltDirection
 import com.hearxgroup.tilttowin.extensions.blinkView
 import com.hearxgroup.tilttowin.features.game.fragments.ColorSelectorFragment
 import com.hearxgroup.tilttowin.features.game.fragments.RoundFinishedFragment
@@ -24,6 +25,8 @@ import com.hearxgroup.tilttowin.helpers.showErrorAlert
 import com.hearxgroup.tilttowin.helpers.showSuccessAlert
 import kotlinx.android.synthetic.main.activity_game.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.*
+import kotlin.collections.ArrayList
 
 class GameActivity : BaseActivity(), SensorEventListener {
     private lateinit var binding: ActivityGameBinding
@@ -175,6 +178,10 @@ class GameActivity : BaseActivity(), SensorEventListener {
         }
 
         lastDirection = direction
+
+
+
+//tvSensor.text = " ${builder.toString()}"
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
