@@ -175,24 +175,14 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
         }
 
-    val isZ = z > 5 || z < -5
-    val isY = y > 5 || y < -5
-    val isAllowed = isZ || isY
-
-/*
-tvisZ.text = "IsZ: $isZ"
-tvisY.text = "IsY: $isY"
-tvX.text = "X: $x / zAngle: $zAngle"
-tvY.text = "Y: $y / yAngle: $yAngle"
-tvZ.text = "Z: $z"
-tvSensor.text = "Current:$accelerationCurrentValue \n Change: $changeInAcceleration"
-*/
+        val isZ = z > 5 || z < -5
+        val isY = y > 5 || y < -5
+        val isAllowed = isZ || isY
 
         if(isAllowed) {
             if(lastDirection != null && direction != lastDirection && direction < 4) {
                 gameViewModel.setUserTiltDirection(direction)
                 tvTryAgain.visibility = View.GONE
-//tvDir.text = "${TiltDirection.values()[direction].directionName}"
             }
         }
 
