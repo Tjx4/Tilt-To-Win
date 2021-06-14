@@ -92,7 +92,8 @@
 
 
 
-
+<!--
+https://www.youtube.com/watch?v=zUzZ67grYt8&t=331s
 
         <TextView
             android:id="@+id/tvisZ"
@@ -153,6 +154,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="0"
+            android:gravity="right"
             android:textColor="@color/redArrow"
             android:layout_margin="@dimen/medium_margin"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -168,7 +170,7 @@
             android:layout_margin="@dimen/medium_margin"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
-
+-->
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>

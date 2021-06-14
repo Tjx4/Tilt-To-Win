@@ -25,15 +25,16 @@ import com.hearxgroup.tilttowin.helpers.showErrorAlert
 import com.hearxgroup.tilttowin.helpers.showSuccessAlert
 import kotlinx.android.synthetic.main.activity_game.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.*
-import kotlin.collections.ArrayList
 
 class GameActivity : BaseActivity(), SensorEventListener {
     private lateinit var binding: ActivityGameBinding
     val gameViewModel: GameViewModel by viewModel()
     private var sensorManager: SensorManager? = null
-    private var sensor: Sensor? = null
+    private var accelerometer: Sensor? = null
+    private var magnetometer: Sensor? = null
     private var lastDirection: Int? = null
+    private var accelerationCurrentValue: Double = 0.0
+    private var accelerationPrevValue: Double = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,12 +44,12 @@ class GameActivity : BaseActivity(), SensorEventListener {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         addObservers()
         initSensor()
-        //showColorSelector()
+        showColorSelector()
     }
 
     override fun onResume() {
         super.onResume()
-        sensorManager?.registerListener(this, sensor, SensorManager.SENSOR_DELAY_NORMAL)
+        sensorManager?.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     override fun onPause() {
@@ -108,13 +109,7 @@ class GameActivity : BaseActivity(), SensorEventListener {
     }
 
     private fun onWinRound(isWin: Boolean){
-        val roundFinishedFragment = RoundFinishedFragment.newInstance()
-        showDialogFragment(
-            getString(R.string.round_complete),
-            null,
-            roundFinishedFragment,
-            this
-        )
+        gameViewModel.initRound()
     }
 
     private fun onLoseRound(isLose: Boolean) {
@@ -129,8 +124,12 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
     private fun initSensor() {
         sensorManager = getSystemService(SENSOR_SERVICE) as SensorManager?
-        sensor = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
-        sensorManager?.registerListener(this, sensor, 1000000)
+
+        accelerometer = sensorManager?.getDefaultSensor(Sensor.TYPE_ACCELEROMETER)
+        magnetometer = sensorManager?.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
+
+        sensorManager?.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST) //1000000)
+        sensorManager?.registerListener(this, magnetometer, SensorManager.SENSOR_DELAY_FASTEST)
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -144,9 +143,13 @@ class GameActivity : BaseActivity(), SensorEventListener {
         val threshold = (requiredAngle * 90 / 100)
         var direction = 4
 
+        accelerationCurrentValue = Math.sqrt( (x * x + y * y + z * z).toDouble() )
+        val changeInAcceleration = Math.abs(accelerationCurrentValue - accelerationPrevValue).toInt()
+        accelerationPrevValue = accelerationCurrentValue
+
         if (zAngle > threshold || zAngle < -threshold) {
-            val forward = zAngle < -requiredAngle
-            val back = zAngle > requiredAngle
+            val forward = zAngle < -requiredAngle && changeInAcceleration < 6
+            val back = zAngle > requiredAngle && changeInAcceleration < 6
 
             when {
                 forward -> {
@@ -158,8 +161,8 @@ class GameActivity : BaseActivity(), SensorEventListener {
             }
 
         } else {
-            val left = yAngle < -requiredAngle
-            val right = yAngle > requiredAngle
+            val left = yAngle < -requiredAngle && changeInAcceleration < 4
+            val right = yAngle > requiredAngle && changeInAcceleration < 4
 
             when{
                 left -> {
@@ -172,32 +175,28 @@ class GameActivity : BaseActivity(), SensorEventListener {
 
         }
 
-
     val isZ = z > 5 || z < -5
     val isY = y > 5 || y < -5
     val isAllowed = isZ || isY
 
+/*
 tvisZ.text = "IsZ: $isZ"
 tvisY.text = "IsY: $isY"
 tvX.text = "X: $x / zAngle: $zAngle"
 tvY.text = "Y: $y / yAngle: $yAngle"
 tvZ.text = "Z: $z"
-
+tvSensor.text = "Current:$accelerationCurrentValue \n Change: $changeInAcceleration"
+*/
 
         if(isAllowed) {
             if(lastDirection != null && direction != lastDirection && direction < 4) {
                 gameViewModel.setUserTiltDirection(direction)
                 tvTryAgain.visibility = View.GONE
-
-tvDir.text = "${TiltDirection.values()[direction].directionName}"
+//tvDir.text = "${TiltDirection.values()[direction].directionName}"
             }
         }
 
         lastDirection = direction
-
-
-
-//tvSensor.text = " ${builder.toString()}"
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
